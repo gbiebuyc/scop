@@ -16,6 +16,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <string.h>
 
 void handle_events(GLFWwindow *window)
 {
@@ -31,19 +34,50 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"
+    "layout (location = 2) in vec2 aTexCoord;"
     "out vec3 ourColor;"
+    "out vec2 TexCoord;"
     "void main()\n"
     "{\n"
     "   gl_Position = vec4(aPos, 1.0);\n"
     "   ourColor = aColor;"
+    "   TexCoord = aTexCoord;"
     "}\0";
 const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
     "in vec3 ourColor;"
+    "in vec2 TexCoord;"
+    "uniform sampler2D ourTexture;"
     "void main()\n"
     "{\n"
-    "   FragColor = vec4(ourColor, 1);\n"
+    "   FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1);"
     "}\n\0";
+
+uint8_t *read_ppm(char *filename, int *w, int *h)
+{
+    FILE    *f;
+    char    buf[255];
+    uint8_t *img_buf;
+
+    if (!(f = fopen(filename, "rb")))
+        exit(printf("fopen failed %s\n", filename));
+    if (!fgets(buf, 255, f) || (strncmp(buf, "P6\n", 3) != 0))
+        exit(printf("image read error 1"));
+    if (!fgets(buf, 255, f))
+        exit(printf("image read error 1 bis"));
+    while (strncmp(buf, "#", 1) == 0)
+        if (!fgets(buf, 255, f))
+            exit(printf("image read error 2"));
+    if (sscanf(buf, "%u %u", w, h) < 2)
+        exit(printf("image read error 3"));
+    if (!fgets(buf, 255, f))
+        exit(printf("image read error 4"));
+    if (!(img_buf = malloc(*w * *h * 3)))
+        exit(printf("image read error 5"));
+    if (!(fread(img_buf, 1, *w * *h * 3, f)))
+        exit(printf("image read error 6"));
+    return img_buf;
+}
 
 int main()
 {
@@ -104,16 +138,21 @@ int main()
     glDeleteShader(fragmentShader);
 
     float vertices[] = {
-        // positions         // colors
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
-    }; 
+        // positions          // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+    };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
+    };
 
-    // unsigned int EBO;
-    // glGenBuffers(1, &EBO);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -124,12 +163,26 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // tex attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    // Load texture
+    int w, h;
+    uint8_t *data = read_ppm("./wall.ppm", &w, &h);
+    unsigned int tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    free(data);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -144,10 +197,11 @@ int main()
 
         glUseProgram(shaderProgram);
         // glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // glBindVertexArray(VAO);
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
