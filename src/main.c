@@ -10,19 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <math.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <string.h>
-
-void    mat_mul(float a[16], float b[16]);
-void    mat_print(float mat[][4]);
-void    mat_rot_z(float angle, float mat[16]);
+#include "scop.h"
 
 void handle_events(GLFWwindow *window)
 {
@@ -199,7 +187,7 @@ int main()
             0, 0, 0, 1
         };
         float time = glfwGetTime();
-        mat_rot_z(time, matrix);
+        mat_rot('x', time, matrix);
         // float greenValue = (sin(time) / 2.0) + 0.5;
         // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
         int transformLoc = glGetUniformLocation(shaderProgram, "transform");

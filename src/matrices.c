@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include "scop.h"
 
-void	mat_mul(float a[][4], float b[][4])
+void	mat_mul(float a[16], float b[16])
 {
 	float	result[4][4];
 	int		i;
@@ -31,7 +29,7 @@ void	mat_mul(float a[][4], float b[][4])
 			k = 0;
 			while (k < 4)
 			{
-				result[i][j] += a[i][k] * b[k][j];
+				result[i][j] += a[i * 4 + k] * b[k * 4 + j];
 				k++;
 			}
 			j++;
@@ -53,17 +51,29 @@ void	mat_print(float mat[16])
 	}
 }
 
-void	mat_rot_z(float angle, float mat[][4])
+void	mat_rot(char axis, float angle, float mat[16])
 {
-	float sin_a;
-	float cos_a;
+	float si;
+	float co;
 
-	sin_a = sin(angle);
-	cos_a = cos(angle);
-	mat_mul(mat, (float[16]){
-		cos_a, -sin_a, 0, 0,
-		sin_a, cos_a, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
-	});
+	si = sin(angle);
+	co = cos(angle);
+	if (axis == 'x')
+		mat_mul(mat, (float[16]){
+			1, 0, 0, 0,
+			0, co, -si, 0,
+			0, si, co, 0,
+			0, 0, 0, 1});
+	else if (axis == 'y')
+		mat_mul(mat, (float[16]){
+			co, 0, si, 0,
+			0, 1, 0, 0,
+			-si, 0, co, 0,
+			0, 0, 0, 1});
+	else if (axis == 'z')
+		mat_mul(mat, (float[16]){
+			co, -si, 0, 0,
+			si, co, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1});
 }
