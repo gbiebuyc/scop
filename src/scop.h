@@ -22,4 +22,6 @@
 
 void	mat_mul(float a[16], float b[16]);
 void    mat_print(float mat[16]);
-void	mat_rot(char axis, float angle, float mat[16]);
+float	*mat_rotate(char axis, float angle, float mat[16]);
+float	*mat_translate(float vec[3], float mat[16]);
+float	*mat_identity(float mat[16]);

@@ -51,7 +51,7 @@ void	mat_print(float mat[16])
 	}
 }
 
-void	mat_rot(char axis, float angle, float mat[16])
+float	*mat_rotate(char axis, float angle, float mat[16])
 {
 	float si;
 	float co;
@@ -76,4 +76,22 @@ void	mat_rot(char axis, float angle, float mat[16])
 			si, co, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1});
+	return (mat);
+}
+
+float	*mat_translate(float vec[3], float mat[16])
+{
+	mat[3] = vec[0];
+	mat[7] = vec[1];
+	mat[11] = vec[2];
+	return (mat);
+}
+
+float	*mat_identity(float mat[16])
+{
+	return (memcpy(mat, ((float[16]){
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1}), sizeof(float) * 16));
 }
