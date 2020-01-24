@@ -12,7 +12,8 @@
 
 NAME = scop
 SRC = src/main.c \
-	  glad/src/glad.c
+	src/matrices.c \
+	glad/src/glad.c
 OBJ = $(SRC:.c=.o)
 UNAME = $(shell uname -s)
 CFLAGS = -I ./glfw/include -I ./glad/include

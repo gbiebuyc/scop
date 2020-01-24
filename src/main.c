@@ -20,6 +20,10 @@
 #include <unistd.h>
 #include <string.h>
 
+void    mat_mul(float a[16], float b[16]);
+void    mat_print(float mat[][4]);
+void    mat_rot_z(float angle, float mat[16]);
+
 void handle_events(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -35,11 +39,12 @@ const char *vertexShaderSource = "#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"
     "layout (location = 2) in vec2 aTexCoord;"
+    "uniform mat4 transform;"
     "out vec3 ourColor;"
     "out vec2 TexCoord;"
     "void main()\n"
     "{\n"
-    "   gl_Position = vec4(aPos, 1.0);\n"
+    "   gl_Position = transform * vec4(aPos, 1.0);\n"
     "   ourColor = aColor;"
     "   TexCoord = aTexCoord;"
     "}\0";
@@ -90,7 +95,7 @@ int main()
     GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
-        printf("Failed to create GLFW window");
+        printf("Failed to create GLFW window\n");
         glfwTerminate();
         return -1;
     }
@@ -99,7 +104,7 @@ int main()
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        printf("Failed to initialize GLAD");
+        printf("Failed to initialize GLAD\n");
         return -1;
     }
 
@@ -186,9 +191,18 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        // float time = glfwGetTime()*8;
+
+        float matrix[] = {
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        };
+        float time = glfwGetTime();
+        mat_rot_z(time, matrix);
         // float greenValue = (sin(time) / 2.0) + 0.5;
         // int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        int transformLoc = glGetUniformLocation(shaderProgram, "transform");
 
         handle_events(window);
 
@@ -196,6 +210,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+        glUniformMatrix4fv(transformLoc, 1, GL_TRUE, matrix);
         // glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBindTexture(GL_TEXTURE_2D, tex);
