@@ -102,16 +102,16 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
-	d->window = window;
-	if (window == NULL)
+	d->window = glfwCreateWindow(800, 600,
+			"SCOP. Controls = W/A/S/D/Space/Shift.", NULL, NULL);
+	if (d->window == NULL)
 	{
 		printf("Failed to create GLFW window\n");
 		glfwTerminate();
 		return -1;
 	}
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwMakeContextCurrent(d->window);
+	glfwSetFramebufferSizeCallback(d->window, framebuffer_size_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -245,10 +245,10 @@ int main()
 	free(data);
 	glEnable(GL_DEPTH_TEST);
 
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(d->window))
 	{
 		int width, height;
-		glfwGetFramebufferSize(window, &width, &height);
+		glfwGetFramebufferSize(d->window, &width, &height);
 
 		float *model;
 		float *view;
@@ -283,7 +283,7 @@ int main()
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(d->window);
 		glfwPollEvents();
 	}
 
