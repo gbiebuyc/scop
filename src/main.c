@@ -175,6 +175,18 @@ int main()
 		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
+	float cubePositions[][3] = {
+	  { 0.0f,  0.0f,  0.0f}, 
+	  { 2.0f,  5.0f, -15.0f}, 
+	  {-1.5f, -2.2f, -2.5f},  
+	  {-3.8f, -2.0f, -12.3f},  
+	  { 2.4f, -0.4f, -3.5f},  
+	  {-1.7f,  3.0f, -7.5f},  
+	  { 1.3f, -2.0f, -2.5f},  
+	  { 1.5f,  2.0f, -2.5f}, 
+	  { 1.5f,  0.2f, -1.5f}, 
+	  {-1.3f,  1.0f, -1.5f}  
+	};
 
 	// unsigned int EBO;
 	// glGenBuffers(1, &EBO);
@@ -221,8 +233,6 @@ int main()
 		float *view;
 		float *projection;
 
-		model = mat_rotate('x', 0.3, mat_identity((float[16]){}));
-		model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
 		view = mat_translate((float[3]){0, 0, -3}, mat_identity((float[16]){}));
 		projection = mat_projection(width / (float)height, (float[16]){});
 
@@ -236,7 +246,6 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
-		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
 		glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
 		glUniformMatrix4fv(projectionLoc, 1, GL_TRUE, projection);
 		// glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
@@ -244,7 +253,14 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, tex);
 		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		for (int i = 0; i < 10; i++) {
+			float angle = 20.0f * i;
+			model = mat_identity((float[16]){});
+			model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
+			model = mat_translate(cubePositions[i], model);
+			glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
