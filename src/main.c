@@ -27,12 +27,14 @@ const char *vertexShaderSource = "#version 330 core\n"
 	"layout (location = 0) in vec3 aPos;\n"
 	"layout (location = 1) in vec3 aColor;\n"
 	"layout (location = 2) in vec2 aTexCoord;"
-	"uniform mat4 transform;"
+	"uniform mat4 model;"
+	"uniform mat4 view;"
+	"uniform mat4 projection;"
 	"out vec3 ourColor;"
 	"out vec2 TexCoord;"
 	"void main()\n"
 	"{\n"
-	"   gl_Position = transform * vec4(aPos, 1.0);\n"
+	"   gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
 	"   ourColor = aColor;"
 	"   TexCoord = aTexCoord;"
 	"}\0";
@@ -179,6 +181,8 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
 
 		float *model;
 		float *view;
@@ -186,12 +190,15 @@ int main()
 
 		model = mat_rotate('x', -0.9f, mat_identity((float[16]){}));
 		view = mat_translate((float[3]){0, 0, -3}, mat_identity((float[16]){}));
+		projection = mat_projection(width / (float)height, (float[16]){});
 
 
 		// float time = glfwGetTime();
 		// float greenValue = (sin(time) / 2.0) + 0.5;
 		// int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-		int transformLoc = glGetUniformLocation(shaderProgram, "transform");
+		int modelLoc = glGetUniformLocation(shaderProgram, "model");
+		int viewLoc = glGetUniformLocation(shaderProgram, "view");
+		int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 
 		handle_events(window);
 
@@ -199,7 +206,9 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
-		glUniformMatrix4fv(transformLoc, 1, GL_TRUE, model);
+		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
+		glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
+		glUniformMatrix4fv(projectionLoc, 1, GL_TRUE, projection);
 		// glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBindTexture(GL_TEXTURE_2D, tex);

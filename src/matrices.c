@@ -12,6 +12,10 @@
 
 #include "scop.h"
 
+/*
+**	Matrices are stored in row-major order.
+*/
+
 void	mat_mul(float a[16], float b[16])
 {
 	float	result[4][4];
@@ -81,9 +85,11 @@ float	*mat_rotate(char axis, float angle, float mat[16])
 
 float	*mat_translate(float vec[3], float mat[16])
 {
-	mat[3] = vec[0];
-	mat[7] = vec[1];
-	mat[11] = vec[2];
+	mat_mul(mat, (float[16]){
+		1, 0, 0, vec[0],
+		0, 1, 0, vec[1],
+		0, 0, 1, vec[2],
+		0, 0, 0, 1});
 	return (mat);
 }
 
@@ -94,4 +100,20 @@ float	*mat_identity(float mat[16])
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			0, 0, 0, 1}), sizeof(float) * 16));
+}
+
+#define FOV 60
+#define NEAR 0.1
+#define FAR 100
+
+float	*mat_projection(float ratio, float mat[16])
+{
+	mat_identity(mat);
+	mat[5] = 1 / tan(0.5 * FOV * M_PI / 180.0);
+	mat[0] = mat[5] / ratio;
+	mat[10] = -FAR / (FAR - NEAR);
+	mat[14] = -1;
+	mat[11] = -(FAR * NEAR) / (FAR - NEAR);
+	mat[15] = 0;
+	return mat;
 }
