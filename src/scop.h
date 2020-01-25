@@ -20,6 +20,17 @@
 #include <unistd.h>
 #include <string.h>
 
+#define X 0
+#define Y 1
+#define Z 2
+
+typedef struct  s_data
+{
+    float       pos[3];
+    double      last_frame;
+    GLFWwindow* window;
+}               t_data;
+
 void	mat_mul(float a[16], float b[16]);
 void    mat_print(float mat[16]);
 float	*mat_rotate(char axis, float angle, float mat[16]);

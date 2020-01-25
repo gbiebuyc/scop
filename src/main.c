@@ -12,10 +12,28 @@
 
 #include "scop.h"
 
-void handle_events(GLFWwindow *window)
+void handle_events(t_data *d)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+	float	speed;
+	double	now;
+
+	now = glfwGetTime();
+	speed = 6 * (now - d->last_frame);
+	d->last_frame = now;
+	if (glfwGetKey(d->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(d->window, true);
+    if (glfwGetKey(d->window, GLFW_KEY_W) == GLFW_PRESS)
+        d->pos[Z] += speed;
+    if (glfwGetKey(d->window, GLFW_KEY_S) == GLFW_PRESS)
+        d->pos[Z] -= speed;
+    if (glfwGetKey(d->window, GLFW_KEY_A) == GLFW_PRESS)
+        d->pos[X] += speed;
+    if (glfwGetKey(d->window, GLFW_KEY_D) == GLFW_PRESS)
+        d->pos[X] -= speed;
+    if (glfwGetKey(d->window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        d->pos[Y] -= speed;
+    if (glfwGetKey(d->window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        d->pos[Y] += speed;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -76,6 +94,8 @@ uint8_t *read_ppm(char *filename, int *w, int *h)
 
 int main()
 {
+	t_data	mydata = {.pos = {0, 0, -3}};
+	t_data	*d = &mydata;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -83,6 +103,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+	d->window = window;
 	if (window == NULL)
 	{
 		printf("Failed to create GLFW window\n");
@@ -233,14 +254,14 @@ int main()
 		float *view;
 		float *projection;
 
-		view = mat_translate((float[3]){0, 0, -3}, mat_identity((float[16]){}));
+		view = mat_translate(d->pos, mat_identity((float[16]){}));
 		projection = mat_projection(width / (float)height, (float[16]){});
 
 		int modelLoc = glGetUniformLocation(shaderProgram, "model");
 		int viewLoc = glGetUniformLocation(shaderProgram, "view");
 		int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 
-		handle_events(window);
+		handle_events(d);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -256,8 +277,8 @@ int main()
 		for (int i = 0; i < 10; i++) {
 			float angle = 20.0f * i;
 			model = mat_identity((float[16]){});
-			model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
 			model = mat_translate(cubePositions[i], model);
+			model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
 			glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
