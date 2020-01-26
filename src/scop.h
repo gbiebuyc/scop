@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef SCOP_H
+# define SCOP_H
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
@@ -38,3 +41,5 @@ float	*mat_translate(float vec[3], float mat[16]);
 float	*mat_identity(float mat[16]);
 float	*mat_projection(float ratio);
 float	*mat_look_at(float pos[3]);
+
+#endif
