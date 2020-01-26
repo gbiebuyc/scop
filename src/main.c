@@ -96,6 +96,7 @@ int main()
 {
 	t_data	mydata = {.pos = {0, 0, 3}};
 	t_data	*d = &mydata;
+	parse_obj(d);
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);

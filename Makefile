@@ -13,10 +13,11 @@
 NAME = scop
 SRC = src/main.c \
 	src/matrices.c \
+	src/parse_obj.c \
 	glad/src/glad.c
 OBJ = $(SRC:.c=.o)
 UNAME = $(shell uname -s)
-CFLAGS = -I ./glfw/include -I ./glad/include
+CFLAGS = -I ./glfw/include -I ./glad/include -g
 ifneq (, $(findstring MINGW, $(UNAME)))
 	LDFLAGS = -L ./glfw/lib-mingw -lglfw3 -lgdi32
 else ifeq ($(UNAME), Darwin)
