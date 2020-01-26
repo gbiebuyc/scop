@@ -23,17 +23,17 @@ void handle_events(t_data *d)
 	if (glfwGetKey(d->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(d->window, true);
     if (glfwGetKey(d->window, GLFW_KEY_W) == GLFW_PRESS)
-        d->pos[Z] += speed;
-    if (glfwGetKey(d->window, GLFW_KEY_S) == GLFW_PRESS)
         d->pos[Z] -= speed;
+    if (glfwGetKey(d->window, GLFW_KEY_S) == GLFW_PRESS)
+        d->pos[Z] += speed;
     if (glfwGetKey(d->window, GLFW_KEY_A) == GLFW_PRESS)
-        d->pos[X] += speed;
-    if (glfwGetKey(d->window, GLFW_KEY_D) == GLFW_PRESS)
         d->pos[X] -= speed;
+    if (glfwGetKey(d->window, GLFW_KEY_D) == GLFW_PRESS)
+        d->pos[X] += speed;
     if (glfwGetKey(d->window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        d->pos[Y] -= speed;
-    if (glfwGetKey(d->window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         d->pos[Y] += speed;
+    if (glfwGetKey(d->window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        d->pos[Y] -= speed;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -94,7 +94,7 @@ uint8_t *read_ppm(char *filename, int *w, int *h)
 
 int main()
 {
-	t_data	mydata = {.pos = {0, 0, -3}};
+	t_data	mydata = {.pos = {0, 0, 3}};
 	t_data	*d = &mydata;
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -254,8 +254,8 @@ int main()
 		float *view;
 		float *projection;
 
-		view = mat_translate(d->pos, mat_identity((float[16]){}));
-		projection = mat_projection(width / (float)height, (float[16]){});
+		view = mat_look_at(d->pos);
+		projection = mat_projection(width / (float)height);
 
 		int modelLoc = glGetUniformLocation(shaderProgram, "model");
 		int viewLoc = glGetUniformLocation(shaderProgram, "view");

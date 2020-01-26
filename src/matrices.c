@@ -106,8 +106,10 @@ float	*mat_identity(float mat[16])
 #define NEAR 0.1
 #define FAR 100
 
-float	*mat_projection(float ratio, float mat[16])
+float	*mat_projection(float ratio)
 {
+	static float mat[16];
+
 	mat_identity(mat);
 	mat[5] = 1 / tan(0.5 * FOV * M_PI / 180.0);
 	mat[0] = mat[5] / ratio;
@@ -115,5 +117,14 @@ float	*mat_projection(float ratio, float mat[16])
 	mat[14] = -1;
 	mat[11] = -(FAR * NEAR) / (FAR - NEAR);
 	mat[15] = 0;
+	return mat;
+}
+
+float	*mat_look_at(float pos[3])
+{
+	static float mat[16];
+
+	mat_identity(mat);
+	mat_translate((float[3]){-pos[X], -pos[Y], -pos[Z]}, mat);
 	return mat;
 }
