@@ -43,27 +43,27 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 const char *vertexShaderSource = "#version 330 core\n"
 	"layout (location = 0) in vec3 aPos;\n"
-	"layout (location = 1) in vec3 aColor;\n"
-	"layout (location = 2) in vec2 aTexCoord;"
+	// "layout (location = 1) in vec3 aColor;\n"
+	// "layout (location = 2) in vec2 aTexCoord;"
 	"uniform mat4 model;"
 	"uniform mat4 view;"
 	"uniform mat4 projection;"
-	"out vec3 ourColor;"
-	"out vec2 TexCoord;"
+	// "out vec3 ourColor;"
+	// "out vec2 TexCoord;"
 	"void main()\n"
 	"{\n"
 	"   gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
-	"   ourColor = aColor;"
-	"   TexCoord = aTexCoord;"
+	// "   ourColor = aColor;"
+	// "   TexCoord = aTexCoord;"
 	"}\0";
 const char *fragmentShaderSource = "#version 330 core\n"
 	"out vec4 FragColor;\n"
-	"in vec3 ourColor;"
-	"in vec2 TexCoord;"
+	// "in vec3 ourColor;"
+	// "in vec2 TexCoord;"
 	"uniform sampler2D ourTexture;"
 	"void main()\n"
 	"{\n"
-	"   FragColor = texture(ourTexture, TexCoord);"
+	"   FragColor = vec4(1, 1, 1, 1);"
 	"}\n\0";
 
 uint8_t *read_ppm(char *filename, int *w, int *h)
@@ -210,10 +210,10 @@ int main()
 	  {-1.3f,  1.0f, -1.5f}  
 	};
 
-	// unsigned int EBO;
-	// glGenBuffers(1, &EBO);
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	unsigned int EBO;
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 3 * d->nb_faces, d->faces, GL_STATIC_DRAW);
 
 	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO);
@@ -221,10 +221,10 @@ int main()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * d->nb_vertices, d->vertices, GL_STATIC_DRAW);
 
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// color attribute
@@ -232,8 +232,8 @@ int main()
 	// glEnableVertexAttribArray(1);
 
 	// tex attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	// glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	// glEnableVertexAttribArray(2);
 
 	// Load texture
 	int w, h;
@@ -270,19 +270,22 @@ int main()
 		glUseProgram(shaderProgram);
 		glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
 		glUniformMatrix4fv(projectionLoc, 1, GL_TRUE, projection);
+		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
 		// glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
-		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBindTexture(GL_TEXTURE_2D, tex);
-		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(VAO);
-		for (int i = 0; i < 10; i++) {
-			float angle = 20.0f * i;
-			model = mat_identity((float[16]){});
-			model = mat_translate(cubePositions[i], model);
-			model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-			glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		model = mat_identity((float[16]){});
+		model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
+		glDrawElements(GL_LINES, d->nb_faces * 3, GL_UNSIGNED_INT, 0);
+		// for (int i = 0; i < 10; i++) {
+		// 	float angle = 20.0f * i;
+		// 	model = mat_identity((float[16]){});
+		// 	model = mat_translate(cubePositions[i], model);
+		// 	model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
+		// 	glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
+		// 	glDrawArrays(GL_TRIANGLES, 0, 36);
+		// }
 
 		glfwSwapBuffers(d->window);
 		glfwPollEvents();
