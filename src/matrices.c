@@ -86,9 +86,9 @@ float	*mat_rotate(char axis, float angle, float mat[16])
 float	*mat_translate(float vec[3], float mat[16])
 {
 	mat_mul(mat, (float[16]){
-		1, 0, 0, vec[0],
-		0, 1, 0, vec[1],
-		0, 0, 1, vec[2],
+		1, 0, 0, vec[X],
+		0, 1, 0, vec[Y],
+		0, 0, 1, vec[Z],
 		0, 0, 0, 1});
 	return (mat);
 }
