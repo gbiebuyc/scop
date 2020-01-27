@@ -253,6 +253,8 @@ int main(int ac, char **av)
 	glGenerateMipmap(GL_TEXTURE_2D);
 	free(data);
 	glEnable(GL_DEPTH_TEST);
+		printf("%d\n", d->vertices.size / 12);
+		printf("%d\n", d->faces.size / 12);
 
 	while (!glfwWindowShouldClose(d->window))
 	{
@@ -286,7 +288,8 @@ int main(int ac, char **av)
 		// model = mat_translate(d->model_center_offset, model);
 		model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
 		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
-		glDrawElements(GL_LINES, d->faces.size / sizeof(uint32_t), GL_UNSIGNED_INT, 0);
+		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		glDrawElements(GL_TRIANGLES, d->faces.size / sizeof(uint32_t), GL_UNSIGNED_INT, 0);
 		// for (int i = 0; i < 10; i++) {
 		// 	float angle = 20.0f * i;
 		// 	model = mat_identity((float[16]){});

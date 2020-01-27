@@ -47,12 +47,18 @@ void	add_vertex(t_data *d, float v[3])
 	array_append(&d->vertices, v, sizeof(float) * 3);
 }
 
-void	face(t_data *d, int f[3])
+void	face(t_data *d, char *line)
 {
-    f[0]--;
-    f[1]--;
-    f[2]--;
-	array_append(&d->faces, f, sizeof(int) * 3);
+    int     f[3];
+
+	f[0] = strtol(line, &line, 10) - 1;
+	f[1] = strtol(line, &line, 10) - 1;
+	while ((f[2] = strtol(line, &line, 10)))
+	{
+		f[2]--;
+		array_append(&d->faces, f, sizeof(int) * 3);
+		f[1] = f[2];
+	}
 }
 
 void    parse_obj(t_data *d)
@@ -60,15 +66,14 @@ void    parse_obj(t_data *d)
     FILE    *fp;
     char    line[100];
     float   v[3];
-    int     f[3];
 
     fp = fopen(d->objfilename, "r");
     while(fgets(line, 100, fp))
     {
         if (sscanf(line, "v %f %f %f", v, &v[1], &v[2]) == 3)
 			add_vertex(d, v);
-        else if (sscanf(line, "f %d %d %d", f, &f[1], &f[2]) == 3)
-			face(d, f);
+        else if (strncmp(line, "f ", 2) == 0)
+			face(d, line + 2);
     }
 	d->model_center_offset[0] = (d->vertex_extremes[3] + d->vertex_extremes[0]) / 2.0;
 	d->model_center_offset[1] = (d->vertex_extremes[4] + d->vertex_extremes[1]) / 2.0;
