@@ -57,20 +57,23 @@ const char *vertexShaderSource = "#version 330 core\n"
 	"uniform mat4 projection;"
 	// "out vec3 ourColor;"
 	// "out vec2 TexCoord;"
+	"out vec3 pos;"
 	"void main()\n"
 	"{\n"
 	"   gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+	"	pos = aPos;"
 	// "   ourColor = aColor;"
 	// "   TexCoord = aTexCoord;"
 	"}\0";
 const char *fragmentShaderSource = "#version 330 core\n"
 	"out vec4 FragColor;\n"
+	"in vec3 pos;"
 	// "in vec3 ourColor;"
 	// "in vec2 TexCoord;"
 	"uniform sampler2D ourTexture;"
 	"void main()\n"
 	"{\n"
-	"   FragColor = vec4(1, 1, 1, 1);"
+	"   FragColor = texture(ourTexture, vec2(pos.z, -pos.y));"
 	"}\n\0";
 
 uint8_t *read_ppm(char *filename, int *w, int *h)
@@ -245,7 +248,7 @@ int main(int ac, char **av)
 
 	// Load texture
 	int w, h;
-	uint8_t *data = read_ppm("./wall.ppm", &w, &h);
+	uint8_t *data = read_ppm("./awesomeface.pbm", &w, &h);
 	unsigned int tex;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
@@ -253,8 +256,6 @@ int main(int ac, char **av)
 	glGenerateMipmap(GL_TEXTURE_2D);
 	free(data);
 	glEnable(GL_DEPTH_TEST);
-		printf("%d\n", d->vertices.size / 12);
-		printf("%d\n", d->faces.size / 12);
 
 	while (!glfwWindowShouldClose(d->window))
 	{
@@ -289,7 +290,7 @@ int main(int ac, char **av)
 		model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
 		model = mat_translate(d->model_center_offset, model);
 		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
-		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		// glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		glDrawElements(GL_TRIANGLES, d->faces.size / sizeof(uint32_t), GL_UNSIGNED_INT, 0);
 		// for (int i = 0; i < 10; i++) {
 		// 	float angle = 20.0f * i;
