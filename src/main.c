@@ -6,11 +6,18 @@
 /*   By: gbiebuyc <gbiebuyc@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/21 11:50:07 by gbiebuyc          #+#    #+#             */
-/*   Updated: 2020/01/21 16:10:26 by gbiebuyc         ###   ########.fr       */
+/*   Updated: 2020/01/27 10:38:08 by gbiebuyc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scop.h"
+
+void	parse_args(t_data *d, int ac, char **av)
+{
+	if (ac != 2)
+		exit(printf("usage: %s obj_file\n\n", av[0]));
+	d->objfilename = av[1];
+}
 
 void handle_events(t_data *d)
 {
@@ -92,10 +99,11 @@ uint8_t *read_ppm(char *filename, int *w, int *h)
 	return img_buf;
 }
 
-int main()
+int main(int ac, char **av)
 {
 	t_data	mydata = {.pos = {0, 0, 3}};
 	t_data	*d = &mydata;
+	parse_args(d, ac, av);
 	parse_obj(d);
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -213,7 +221,7 @@ int main()
 	unsigned int EBO;
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * 3 * d->nb_faces, d->faces, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, d->faces.size, d->faces.array, GL_STATIC_DRAW);
 
 	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO);
@@ -221,7 +229,7 @@ int main()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * d->nb_vertices, d->vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, d->vertices.size, d->vertices.array, GL_STATIC_DRAW);
 
 	// position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -270,14 +278,14 @@ int main()
 		glUseProgram(shaderProgram);
 		glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
 		glUniformMatrix4fv(projectionLoc, 1, GL_TRUE, projection);
-		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
 		// glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glBindVertexArray(VAO);
 		model = mat_identity((float[16]){});
 		model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-		glDrawElements(GL_LINES, d->nb_faces * 3, GL_UNSIGNED_INT, 0);
+		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
+		glDrawElements(GL_LINES, d->faces.size / sizeof(uint32_t), GL_UNSIGNED_INT, 0);
 		// for (int i = 0; i < 10; i++) {
 		// 	float angle = 20.0f * i;
 		// 	model = mat_identity((float[16]){});

@@ -27,15 +27,22 @@
 #define Y 1
 #define Z 2
 
+typedef struct	s_dynarray
+{
+	void		*array;
+	size_t		size;
+	size_t		capacity;
+}				t_dynarray;
+
 typedef struct  s_data
 {
+	char		*objfilename;
     float       pos[3];
     double      last_frame;
     GLFWwindow* window;
-    float       *vertices;
-    int         nb_vertices;
-    int         *faces;
-    int         nb_faces;
+    t_dynarray  vertices;
+    t_dynarray  faces;
+	float		model_center_offset;
 }               t_data;
 
 void	mat_mul(float a[16], float b[16]);

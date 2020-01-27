@@ -1,46 +1,41 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_obj.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gbiebuyc <gbiebuyc@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/01/27 12:17:00 by gbiebuyc          #+#    #+#             */
+/*   Updated: 2020/01/27 12:17:02 by gbiebuyc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
-void    push_vertex(t_data *d, float v[3])
+void    array_append(t_dynarray *da, void *elem, size_t elemsize)
 {
-    static int  capacity = 0;
-
-    if (capacity == 0)
+    if (da->capacity == 0)
     {
-        capacity = 64;
-        if (!(d->vertices = malloc(sizeof(float) * 3 * capacity)))
+        da->capacity = 64;
+        if (!(da->array = malloc(da->capacity)))
             exit(printf("malloc fail\n"));
     }
-    if (d->nb_vertices >= capacity)
+    if (da->size + elemsize > da->capacity)
     {
-        capacity *= 2;
-        if (!(d->vertices = realloc(d->vertices, sizeof(float) * 3 * capacity)))
+        da->capacity *= 2;
+        if (!(da->array = realloc(da->array, da->capacity)))
             exit(printf("realloc fail\n"));
     }
-    memcpy(&d->vertices[d->nb_vertices * 3], v, sizeof(float) * 3);
-    d->nb_vertices++;
+    memcpy((char*)da->array + da->size, elem, elemsize);
+    da->size += elemsize;
 }
 
-void    push_face(t_data *d, uint32_t f[3])
+void	face(t_data *d, int f[3])
 {
-    static int  capacity = 0;
-
-    if (capacity == 0)
-    {
-        capacity = 64;
-        if (!(d->faces = malloc(sizeof(uint32_t) * 3 * capacity)))
-            exit(printf("malloc fail\n"));
-    }
-    if (d->nb_faces >= capacity)
-    {
-        capacity *= 2;
-        if (!(d->faces = realloc(d->faces, sizeof(uint32_t) * 3 * capacity)))
-            exit(printf("realloc fail\n"));
-    }
     f[0]--;
     f[1]--;
     f[2]--;
-    memcpy(&d->faces[d->nb_faces * 3], f, sizeof(uint32_t) * 3);
-    d->nb_faces++;
+	array_append(&d->faces, f, sizeof(int) * 3);
 }
 
 void    parse_obj(t_data *d)
@@ -50,19 +45,13 @@ void    parse_obj(t_data *d)
     float   v[3];
     int     f[3];
 
-    fp = fopen("resources/teapot2.obj", "r");
+    fp = fopen(d->objfilename, "r");
     while(fgets(line, 100, fp))
     {
         if (sscanf(line, "v %f %f %f", v, &v[1], &v[2]) == 3)
-            push_vertex(d, v);
+			array_append(&d->vertices, v, sizeof(v));
         else if (sscanf(line, "f %d %d %d", f, &f[1], &f[2]) == 3)
-            push_face(d, f);
+			face(d, f);
     }
     fclose(fp);
-    // for (int i = 0; i < d->nb_vertices; i++) {
-    //     int j = i*3;
-    //     printf("%f, %f, %f\n", d->vertices[j], d->vertices[j+1], d->vertices[j+2]);
-    // }
-    printf("%d vertices\n", d->nb_vertices);
-    printf("%d faces\n", d->nb_faces);
 }
