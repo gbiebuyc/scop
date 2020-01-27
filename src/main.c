@@ -265,7 +265,7 @@ int main(int ac, char **av)
 
 	// Load texture
 	int w, h;
-	uint8_t *data = read_ppm("./awesomeface.pbm", &w, &h);
+	uint8_t *data = read_ppm("./texture.ppm", &w, &h);
 	unsigned int tex;
 	glGenTextures(1, &tex);
 	glBindTexture(GL_TEXTURE_2D, tex);
