@@ -44,6 +44,8 @@ typedef struct  s_data
     t_dynarray  faces;
 	float		vertex_extremes[6];
 	float		model_center_offset[3];
+	float		transition;
+	float		mix_value;
 }               t_data;
 
 void	mat_mul(float a[16], float b[16]);

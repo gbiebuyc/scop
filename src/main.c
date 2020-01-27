@@ -27,6 +27,7 @@ void handle_events(t_data *d)
 	now = glfwGetTime();
 	speed = 6 * (now - d->last_frame);
 	d->last_frame = now;
+	d->mix_value = fmin(fmax(d->mix_value + d->transition * speed, 0), 1);
 	if (glfwGetKey(d->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(d->window, true);
     if (glfwGetKey(d->window, GLFW_KEY_W) == GLFW_PRESS)
@@ -46,6 +47,15 @@ void handle_events(t_data *d)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	t_data *d;
+
+	d = glfwGetWindowUserPointer(window);
+    if (key == GLFW_KEY_T && action == GLFW_PRESS)
+        d->transition = 0.3 * ((d->transition > 0) ? -1 : 1);
 }
 
 const char *vertexShaderSource = "#version 330 core\n"
@@ -68,12 +78,17 @@ const char *vertexShaderSource = "#version 330 core\n"
 const char *fragmentShaderSource = "#version 330 core\n"
 	"out vec4 FragColor;\n"
 	"in vec3 pos;"
+	"in int gl_PrimitiveID ;"
 	// "in vec3 ourColor;"
 	// "in vec2 TexCoord;"
 	"uniform sampler2D ourTexture;"
+	"uniform float mix_value;"
 	"void main()\n"
 	"{\n"
-	"   FragColor = texture(ourTexture, vec2(pos.z, -pos.y));"
+	"   vec4 color1 = texture(ourTexture, vec2(pos.z, -pos.y));"
+	"	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;"
+	"   vec4 color2 = vec4(factor, factor, factor, 1);"
+	"   FragColor = mix(color2, color1, mix_value);"
 	"}\n\0";
 
 uint8_t *read_ppm(char *filename, int *w, int *h)
@@ -115,13 +130,15 @@ int main(int ac, char **av)
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	d->window = glfwCreateWindow(800, 600,
-			"SCOP. Controls = W/A/S/D/Space/Shift.", NULL, NULL);
+			"SCOP. Movement: W/A/S/D/Space/Shift, Texture: T", NULL, NULL);
 	if (d->window == NULL)
 	{
 		printf("Failed to create GLFW window\n");
 		glfwTerminate();
 		return -1;
 	}
+	glfwSetWindowUserPointer(d->window, d);
+	glfwSetKeyCallback(d->window, key_callback);
 	glfwMakeContextCurrent(d->window);
 	glfwSetFramebufferSizeCallback(d->window, framebuffer_size_callback);
 
@@ -272,6 +289,7 @@ int main(int ac, char **av)
 		int modelLoc = glGetUniformLocation(shaderProgram, "model");
 		int viewLoc = glGetUniformLocation(shaderProgram, "view");
 		int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+		int mix_value_loc = glGetUniformLocation(shaderProgram, "mix_value");
 
 		handle_events(d);
 
@@ -279,6 +297,7 @@ int main(int ac, char **av)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
+		glUniform1f(mix_value_loc, d->mix_value);
 		glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
 		glUniformMatrix4fv(projectionLoc, 1, GL_TRUE, projection);
 		// glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
