@@ -42,7 +42,8 @@ typedef struct  s_data
     GLFWwindow* window;
     t_dynarray  vertices;
     t_dynarray  faces;
-	float		model_center_offset;
+	float		vertex_extremes[6];
+	float		model_center_offset[3];
 }               t_data;
 
 void	mat_mul(float a[16], float b[16]);

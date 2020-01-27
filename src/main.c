@@ -283,6 +283,7 @@ int main(int ac, char **av)
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glBindVertexArray(VAO);
 		model = mat_identity((float[16]){});
+		// model = mat_translate(d->model_center_offset, model);
 		model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
 		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
 		glDrawElements(GL_LINES, d->faces.size / sizeof(uint32_t), GL_UNSIGNED_INT, 0);
