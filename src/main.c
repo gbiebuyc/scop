@@ -217,62 +217,6 @@ int main(int ac, char **av)
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
-	float cubePositions[][3] = {
-	  { 0.0f,  0.0f,  0.0f}, 
-	  { 2.0f,  5.0f, -15.0f}, 
-	  {-1.5f, -2.2f, -2.5f},  
-	  {-3.8f, -2.0f, -12.3f},  
-	  { 2.4f, -0.4f, -3.5f},  
-	  {-1.7f,  3.0f, -7.5f},  
-	  { 1.3f, -2.0f, -2.5f},  
-	  { 1.5f,  2.0f, -2.5f}, 
-	  { 1.5f,  0.2f, -1.5f}, 
-	  {-1.3f,  1.0f, -1.5f}  
-	};
-
 	unsigned int EBO;
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -289,14 +233,6 @@ int main(int ac, char **av)
 	// position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
-	// color attribute
-	// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
-	// glEnableVertexAttribArray(1);
-
-	// tex attribute
-	// glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	// glEnableVertexAttribArray(2);
 
 	// Load texture
 	int w, h;
@@ -339,26 +275,15 @@ int main(int ac, char **av)
 		glUniform1iv(transition_loc, 2, d->transition);
 		glUniformMatrix4fv(viewLoc, 1, GL_TRUE, view);
 		glUniformMatrix4fv(projectionLoc, 1, GL_TRUE, projection);
-		// glUniform4f(vertexColorLocation, 0, greenValue, 0, 1);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glBindVertexArray(VAO);
 		model = mat_identity((float[16]){});
-		// model = mat_rotate('y', 1.57, model);
 		model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
 		model = mat_translate(d->model_center_offset, model);
 		glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
 		// glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 		glDrawElements(GL_TRIANGLES, d->faces.size / sizeof(uint32_t), GL_UNSIGNED_INT, 0);
-		// for (int i = 0; i < 10; i++) {
-		// 	float angle = 20.0f * i;
-		// 	model = mat_identity((float[16]){});
-		// 	model = mat_translate(cubePositions[i], model);
-		// 	model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-		// 	glUniformMatrix4fv(modelLoc, 1, GL_TRUE, model);
-		// 	glDrawArrays(GL_TRIANGLES, 0, 36);
-		// }
-
 		glfwSwapBuffers(d->window);
 		glfwPollEvents();
 	}
