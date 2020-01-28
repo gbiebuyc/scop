@@ -52,12 +52,15 @@ void	face(t_data *d, char *line)
     int     f[3];
 
 	f[0] = strtol(line, &line, 10) - 1;
+	line = strchr(line, ' ');
 	f[1] = strtol(line, &line, 10) - 1;
+	line = strchr(line, ' ');
 	while ((f[2] = strtol(line, &line, 10)))
 	{
 		f[2]--;
 		array_append(&d->faces, f, sizeof(int) * 3);
 		f[1] = f[2];
+		line = strchr(line, ' ');
 	}
 }
 
