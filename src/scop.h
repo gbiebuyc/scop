@@ -44,7 +44,7 @@ typedef struct  s_data
     t_dynarray  faces;
 	float		vertex_extremes[6];
 	float		model_center_offset[3];
-	float		transition;
+	int			transition[2];
 	float		mix_value;
 }               t_data;
 
