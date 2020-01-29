@@ -41,7 +41,7 @@ int main(int ac, char **av)
 		return -1;
 	}
 	glfwSetWindowUserPointer(d->window, d);
-	glfwSetKeyCallback(d->window, key_callback);
+	glfwSetKeyCallback(d->window, (GLFWkeyfun)key_callback);
 	glfwMakeContextCurrent(d->window);
 	glfwSetFramebufferSizeCallback(d->window, framebuffer_size_callback);
 

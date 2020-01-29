@@ -63,6 +63,6 @@ void	load_shader_prog(t_data *d);
 void	handle_events(t_data *d);
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void	transition_toggle(t_data *d, int targetstate);
-void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void	key_callback(GLFWwindow* window, int key, int scancode, int action);
 
 #endif
