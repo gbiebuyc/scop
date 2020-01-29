@@ -13,6 +13,7 @@
 NAME = scop
 SRC = src/main.c \
 	src/matrices.c \
+	src/matrix_transformations.c \
 	src/parse_obj.c \
 	glad/src/glad.c
 OBJ = $(SRC:.c=.o)
