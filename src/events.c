@@ -16,11 +16,13 @@ void	handle_events(t_data *d)
 {
 	float	speed;
 	double	now;
+	double	dt;
 
 	now = glfwGetTime();
-	speed = 6 * (now - d->last_frame);
+	dt = (now - d->last_frame);
 	d->last_frame = now;
-	d->mix_value = fmax(d->mix_value - 0.3 * speed, 0);
+	speed = 3.0 * dt;
+	d->mix_value = fmax(d->mix_value - 1.8 * dt, 0);
 	if (glfwGetKey(d->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(d->window, true);
 	if (glfwGetKey(d->window, GLFW_KEY_W) == GLFW_PRESS)
