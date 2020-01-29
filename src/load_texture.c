@@ -12,29 +12,29 @@
 
 #include "scop.h"
 
-uint8_t	*read_ppm(char *filename, int *w, int *h)
+uint8_t	*read_ppm(t_data *d, char *filename, int *w, int *h)
 {
 	FILE	*f;
 	char	buf[255];
 	uint8_t *img_buf;
 
 	if (!(f = fopen(filename, "rb")))
-		exit(printf("fopen failed %s\n", filename));
+		exit_scop(d, printf("fopen failed %s\n", filename));
 	if (!fgets(buf, 255, f) || (strncmp(buf, "P6\n", 3) != 0))
-		exit(printf("image read error 1"));
+		exit_scop(d, printf("image read error 1"));
 	if (!fgets(buf, 255, f))
-		exit(printf("image read error 1 bis"));
+		exit_scop(d, printf("image read error 1 bis"));
 	while (strncmp(buf, "#", 1) == 0)
 		if (!fgets(buf, 255, f))
-			exit(printf("image read error 2"));
+			exit_scop(d, printf("image read error 2"));
 	if (sscanf(buf, "%u %u", w, h) < 2)
-		exit(printf("image read error 3"));
+		exit_scop(d, printf("image read error 3"));
 	if (!fgets(buf, 255, f))
-		exit(printf("image read error 4"));
+		exit_scop(d, printf("image read error 4"));
 	if (!(img_buf = malloc(*w * *h * 3)))
-		exit(printf("image read error 5"));
+		exit_scop(d, printf("image read error 5"));
 	if (!(fread(img_buf, 1, *w * *h * 3, f)))
-		exit(printf("image read error 6"));
+		exit_scop(d, printf("image read error 6"));
 	return (img_buf);
 }
 
@@ -44,7 +44,7 @@ void	load_texture(t_data *d)
 	int		h;
 	uint8_t	*data;
 
-	data = read_ppm("./texture.ppm", &w, &h);
+	data = read_ppm(d, "./texture.ppm", &w, &h);
 	glGenTextures(1, &d->texture);
 	glBindTexture(GL_TEXTURE_2D, d->texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,

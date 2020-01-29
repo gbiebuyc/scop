@@ -45,12 +45,12 @@ void	init_gl(t_data *d)
 		"SCOP. Movement: W/A/S/D/Space/Shift, Texture: T, Lighting: L",
 		NULL, NULL);
 	if (d->window == NULL)
-		exit(printf("Failed to create GLFW window\n"));
+		exit_scop(d, printf("Failed to create GLFW window\n"));
 	glfwSetWindowUserPointer(d->window, d);
 	glfwSetKeyCallback(d->window, (GLFWkeyfun)key_callback);
 	glfwMakeContextCurrent(d->window);
 	glfwSetFramebufferSizeCallback(d->window, framebuffer_size_callback);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		exit(printf("Failed to initialize GLAD\n"));
+		exit_scop(d, printf("Failed to initialize GLAD\n"));
 	init_gl_2(d);
 }

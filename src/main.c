@@ -15,7 +15,7 @@
 void	parse_args(t_data *d, int ac, char **av)
 {
 	if (ac != 2)
-		exit(printf("usage: %s obj_file\n\n", av[0]));
+		exit_scop(d, printf("usage: %s obj_file\n\n", av[0]));
 	d->objfilename = av[1];
 }
 
@@ -55,19 +55,25 @@ void	loop(t_data *d)
 	}
 }
 
+void	exit_scop(t_data *d, int exit_status)
+{
+	glfwTerminate();
+	free(d);
+	exit(exit_status);
+}
+
 int		main(int ac, char **av)
 {
 	t_data	*d;
 
 	if (!(d = calloc(1, sizeof(t_data))))
-		exit(printf("calloc fail\n"));
+		exit_scop(d, printf("calloc fail\n"));
 	parse_args(d, ac, av);
 	parse_obj(d);
 	init_gl(d);
 	load_shader_prog(d);
 	load_texture(d);
 	loop(d);
-	glfwTerminate();
-	free(d);
+	exit_scop(d, EXIT_SUCCESS);
 	return (0);
 }

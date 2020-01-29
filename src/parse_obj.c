@@ -12,19 +12,19 @@
 
 #include "scop.h"
 
-void	array_append(t_dynarray *da, void *elem, size_t elemsize)
+void	array_append(t_data *d, t_dynarray *da, void *elem, size_t elemsize)
 {
 	if (da->capacity == 0)
 	{
 		da->capacity = 64;
 		if (!(da->array = malloc(da->capacity)))
-			exit(printf("malloc fail\n"));
+			exit_scop(d, printf("malloc fail\n"));
 	}
 	if (da->size + elemsize > da->capacity)
 	{
 		da->capacity *= 2;
 		if (!(da->array = realloc(da->array, da->capacity)))
-			exit(printf("realloc fail\n"));
+			exit_scop(d, printf("realloc fail\n"));
 	}
 	memcpy((char*)da->array + da->size, elem, elemsize);
 	da->size += elemsize;
@@ -38,7 +38,7 @@ void	add_vertex(t_data *d, float v[3])
 	d->vertex_extremes[3] = fmaxf(v[0], d->vertex_extremes[3]);
 	d->vertex_extremes[4] = fmaxf(v[1], d->vertex_extremes[4]);
 	d->vertex_extremes[5] = fmaxf(v[2], d->vertex_extremes[5]);
-	array_append(&d->vertices, v, sizeof(float) * 3);
+	array_append(d, &d->vertices, v, sizeof(float) * 3);
 }
 
 void	face(t_data *d, char *line)
@@ -52,7 +52,7 @@ void	face(t_data *d, char *line)
 	while (line && (f[2] = strtol(line, &line, 10)))
 	{
 		f[2]--;
-		array_append(&d->faces, f, sizeof(int) * 3);
+		array_append(d, &d->faces, f, sizeof(int) * 3);
 		f[1] = f[2];
 		line = strchr(line, ' ');
 	}

@@ -72,5 +72,6 @@ void			transition_toggle(t_data *d, int targetstate);
 void			key_callback(
 	GLFWwindow *window, int key, int scancode, int action);
 void			init_gl(t_data *d);
+void			exit_scop(t_data *d, int exit_status);
 
 #endif
