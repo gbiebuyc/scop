@@ -46,6 +46,8 @@ typedef struct  s_data
 	float		model_center_offset[3];
 	int			transition[2];
 	float		mix_value;
+	GLuint		texture;
+	GLuint		shader_prog;
 }               t_data;
 
 void	mat_mul(float a[16], float b[16]);
@@ -56,5 +58,11 @@ float	*mat_identity(float mat[16]);
 float	*mat_projection(float ratio);
 float	*mat_look_at(float pos[3]);
 void    parse_obj(t_data *d);
+void	load_texture(t_data *d);
+void	load_shader_prog(t_data *d);
+void	handle_events(t_data *d);
+void	framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void	transition_toggle(t_data *d, int targetstate);
+void	key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 #endif
