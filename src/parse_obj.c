@@ -32,18 +32,12 @@ void	array_append(t_dynarray *da, void *elem, size_t elemsize)
 
 void	add_vertex(t_data *d, float v[3])
 {
-	if (v[0] < d->vertex_extremes[0])
-		d->vertex_extremes[0] = v[0];
-	if (v[1] < d->vertex_extremes[1])
-		d->vertex_extremes[1] = v[1];
-	if (v[2] < d->vertex_extremes[2])
-		d->vertex_extremes[2] = v[2];
-	if (v[0] > d->vertex_extremes[3])
-		d->vertex_extremes[3] = v[0];
-	if (v[1] > d->vertex_extremes[4])
-		d->vertex_extremes[4] = v[1];
-	if (v[2] > d->vertex_extremes[5])
-		d->vertex_extremes[5] = v[2];
+	d->vertex_extremes[0] = fminf(v[0], d->vertex_extremes[0]);
+	d->vertex_extremes[1] = fminf(v[1], d->vertex_extremes[1]);
+	d->vertex_extremes[2] = fminf(v[2], d->vertex_extremes[2]);
+	d->vertex_extremes[3] = fmaxf(v[0], d->vertex_extremes[3]);
+	d->vertex_extremes[4] = fmaxf(v[1], d->vertex_extremes[4]);
+	d->vertex_extremes[5] = fmaxf(v[2], d->vertex_extremes[5]);
 	array_append(&d->vertices, v, sizeof(float) * 3);
 }
 
@@ -81,7 +75,7 @@ void	parse_obj(t_data *d)
 	d->offset[0] = -(d->vertex_extremes[3] + d->vertex_extremes[0]) / 2.0;
 	d->offset[1] = -(d->vertex_extremes[4] + d->vertex_extremes[1]) / 2.0;
 	d->offset[2] = -(d->vertex_extremes[5] + d->vertex_extremes[2]) / 2.0;
-	d->pos[Z] = fmax(d->vertex_extremes[3] - d->vertex_extremes[0],
+	d->pos[Z] = fmaxf(d->vertex_extremes[3] - d->vertex_extremes[0],
 		d->vertex_extremes[5] - d->vertex_extremes[2]);
 	fclose(fp);
 }
