@@ -59,7 +59,8 @@ int		main(int ac, char **av)
 {
 	t_data	*d;
 
-	d = calloc(1, sizeof(t_data));
+	if (!(d = calloc(1, sizeof(t_data))))
+		exit(printf("calloc fail\n"));
 	d->pos[2] = 3;
 	parse_args(d, ac, av);
 	parse_obj(d);
