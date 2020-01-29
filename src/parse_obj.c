@@ -55,7 +55,7 @@ void	face(t_data *d, char *line)
 	line = strchr(line, ' ');
 	f[1] = strtol(line, &line, 10) - 1;
 	line = strchr(line, ' ');
-	while ((f[2] = strtol(line, &line, 10)))
+	while (line && (f[2] = strtol(line, &line, 10)))
 	{
 		f[2]--;
 		array_append(&d->faces, f, sizeof(int) * 3);
