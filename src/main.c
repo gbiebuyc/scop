@@ -32,7 +32,7 @@ void	draw(t_data *d)
 	projection = mat_projection(width / (float)height);
 	model = mat_identity((float[16]){0});
 	model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-	model = mat_translate(d->model_center_offset, model);
+	model = mat_translate(d->offset, model);
 	glUniform1f(d->mix_value_loc, d->mix_value);
 	glUniform1iv(d->transition_loc, 2, d->transition);
 	glUniformMatrix4fv(d->view_loc, 1, GL_TRUE, view);
@@ -61,7 +61,6 @@ int		main(int ac, char **av)
 
 	if (!(d = calloc(1, sizeof(t_data))))
 		exit(printf("calloc fail\n"));
-	d->pos[2] = 3;
 	parse_args(d, ac, av);
 	parse_obj(d);
 	init_gl(d);

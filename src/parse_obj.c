@@ -78,11 +78,10 @@ void	parse_obj(t_data *d)
 		else if (strncmp(line, "f ", 2) == 0)
 			face(d, line + 2);
 	}
-	d->model_center_offset[0] =
-		-(d->vertex_extremes[3] + d->vertex_extremes[0]) / 2.0;
-	d->model_center_offset[1] =
-		-(d->vertex_extremes[4] + d->vertex_extremes[1]) / 2.0;
-	d->model_center_offset[2] =
-		-(d->vertex_extremes[5] + d->vertex_extremes[2]) / 2.0;
+	d->offset[0] = -(d->vertex_extremes[3] + d->vertex_extremes[0]) / 2.0;
+	d->offset[1] = -(d->vertex_extremes[4] + d->vertex_extremes[1]) / 2.0;
+	d->offset[2] = -(d->vertex_extremes[5] + d->vertex_extremes[2]) / 2.0;
+	d->pos[Z] = fmax(d->vertex_extremes[3] - d->vertex_extremes[0],
+		d->vertex_extremes[5] - d->vertex_extremes[2]);
 	fclose(fp);
 }
