@@ -70,7 +70,7 @@ void	parse_obj(t_data *d)
 	char	line[100];
 	float	v[3];
 
-	fp = fopen(d->objfilename, "r");
+	fp = fopen(d->objfilename, "rb");
 	while (fgets(line, 100, fp))
 	{
 		if (sscanf(line, "v %f %f %f", v, &v[1], &v[2]) == 3)

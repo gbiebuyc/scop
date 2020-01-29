@@ -18,7 +18,7 @@ char	*read_file_into_mem(char *filename)
 	size_t	size;
 	char	*buf;
 
-	if (!(f = fopen(filename, "r")))
+	if (!(f = fopen(filename, "rb")))
 		exit(printf("open fail: %s\n", filename));
 	fseek(f, 0, SEEK_END);
 	size = ftell(f);
