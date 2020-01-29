@@ -48,6 +48,11 @@ typedef struct  s_data
 	float		mix_value;
 	GLuint		texture;
 	GLuint		shader_prog;
+	GLint		model_loc;
+	GLint		view_loc;
+	GLint		projection_loc;
+	GLint		mix_value_loc;
+	GLint		transition_loc;
 }               t_data;
 
 void	mat_mul(float a[16], float b[16]);
@@ -64,5 +69,6 @@ void	handle_events(t_data *d);
 void	framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void	transition_toggle(t_data *d, int targetstate);
 void	key_callback(GLFWwindow* window, int key, int scancode, int action);
+void	init_gl(t_data *d);
 
 #endif

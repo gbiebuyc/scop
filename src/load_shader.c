@@ -52,6 +52,15 @@ GLuint	load_shader(char *filename, GLenum shadertype)
 	return (shader);
 }
 
+void	get_uniform_locations(t_data *d)
+{
+	d->model_loc = glGetUniformLocation(d->shader_prog, "model");
+	d->view_loc = glGetUniformLocation(d->shader_prog, "view");
+	d->projection_loc = glGetUniformLocation(d->shader_prog, "projection");
+	d->mix_value_loc = glGetUniformLocation(d->shader_prog, "mix_value");
+	d->transition_loc = glGetUniformLocation(d->shader_prog, "transition");
+}
+
 void	load_shader_prog(t_data *d)
 {
 	int		success;
@@ -75,4 +84,6 @@ void	load_shader_prog(t_data *d)
 	}
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
+	glUseProgram(d->shader_prog);
+	get_uniform_locations(d);
 }

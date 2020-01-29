@@ -18,6 +18,7 @@ SRC = src/main.c \
 	src/load_texture.c \
 	src/load_shader.c \
 	src/events.c \
+	src/init_gl.c \
 	glad/src/glad.c
 OBJ = $(SRC:.c=.o)
 UNAME = $(shell uname -s)
