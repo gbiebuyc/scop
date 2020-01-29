@@ -117,7 +117,7 @@ float	*mat_projection(float ratio)
 	mat[14] = -1;
 	mat[11] = -(FAR * NEAR) / (FAR - NEAR);
 	mat[15] = 0;
-	return mat;
+	return (mat);
 }
 
 float	*mat_look_at(float pos[3])
@@ -126,5 +126,5 @@ float	*mat_look_at(float pos[3])
 
 	mat_identity(mat);
 	mat_translate((float[3]){-pos[X], -pos[Y], -pos[Z]}, mat);
-	return mat;
+	return (mat);
 }
