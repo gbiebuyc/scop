@@ -62,6 +62,12 @@ void	exit_scop(t_data *d, int exit_status)
 	exit(exit_status);
 }
 
+void	exit_scop_2(t_data *d, FILE *f, int exit_status)
+{
+	fclose(f);
+	exit_scop(d, exit_status);
+}
+
 int		main(int ac, char **av)
 {
 	t_data	*d;

@@ -18,13 +18,13 @@ void	array_append(t_data *d, t_dynarray *da, void *elem, size_t elemsize)
 	{
 		da->capacity = 64;
 		if (!(da->array = malloc(da->capacity)))
-			exit_scop(d, printf("malloc fail\n"));
+			exit_scop_2(d, d->f, printf("malloc fail\n"));
 	}
 	if (da->size + elemsize > da->capacity)
 	{
 		da->capacity *= 2;
 		if (!(da->array = realloc(da->array, da->capacity)))
-			exit_scop(d, printf("realloc fail\n"));
+			exit_scop_2(d, d->f, printf("realloc fail\n"));
 	}
 	memcpy((char*)da->array + da->size, elem, elemsize);
 	da->size += elemsize;
@@ -65,6 +65,7 @@ void	parse_obj(t_data *d)
 	float	v[3];
 
 	fp = fopen(d->objfilename, "rb");
+	d->f = fp;
 	while (fgets(line, 100, fp))
 	{
 		if (sscanf(line, "v %f %f %f", v, &v[1], &v[2]) == 3)

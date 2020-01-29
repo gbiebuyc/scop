@@ -21,20 +21,21 @@ uint8_t	*read_ppm(t_data *d, char *filename, int *w, int *h)
 	if (!(f = fopen(filename, "rb")))
 		exit_scop(d, printf("fopen failed %s\n", filename));
 	if (!fgets(buf, 255, f) || (strncmp(buf, "P6\n", 3) != 0))
-		exit_scop(d, printf("image read error 1"));
+		exit_scop_2(d, f, printf("image read error 1"));
 	if (!fgets(buf, 255, f))
-		exit_scop(d, printf("image read error 1 bis"));
+		exit_scop_2(d, f, printf("image read error 1 bis"));
 	while (strncmp(buf, "#", 1) == 0)
 		if (!fgets(buf, 255, f))
-			exit_scop(d, printf("image read error 2"));
+			exit_scop_2(d, f, printf("image read error 2"));
 	if (sscanf(buf, "%u %u", w, h) < 2)
-		exit_scop(d, printf("image read error 3"));
+		exit_scop_2(d, f, printf("image read error 3"));
 	if (!fgets(buf, 255, f))
-		exit_scop(d, printf("image read error 4"));
+		exit_scop_2(d, f, printf("image read error 4"));
 	if (!(img_buf = malloc(*w * *h * 3)))
-		exit_scop(d, printf("image read error 5"));
+		exit_scop_2(d, f, printf("image read error 5"));
 	if (!(fread(img_buf, 1, *w * *h * 3, f)))
-		exit_scop(d, printf("image read error 6"));
+		exit_scop_2(d, f, printf("image read error 6"));
+	fclose(f);
 	return (img_buf);
 }
 

@@ -53,6 +53,7 @@ typedef struct	s_data
 	GLint		projection_loc;
 	GLint		mix_value_loc;
 	GLint		transition_loc;
+	FILE		*f;
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);
@@ -73,5 +74,6 @@ void			key_callback(
 	GLFWwindow *window, int key, int scancode, int action);
 void			init_gl(t_data *d);
 void			exit_scop(t_data *d, int exit_status);
+void			exit_scop_2(t_data *d, FILE *f, int exit_status);
 
 #endif

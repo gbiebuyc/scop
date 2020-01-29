@@ -24,7 +24,7 @@ char	*read_file_into_mem(t_data *d, char *filename)
 	size = ftell(f);
 	fseek(f, 0, SEEK_SET);
 	if (!(buf = malloc(size + 1)))
-		exit_scop(d, printf("malloc fail\n"));
+		exit_scop_2(d, f, printf("malloc fail\n"));
 	fread(buf, size, 1, f);
 	buf[size] = '\0';
 	fclose(f);
