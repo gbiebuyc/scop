@@ -80,4 +80,6 @@ void	parse_obj(t_data *d)
 	d->pos[Z] = fmaxf(d->vertex_extremes[3] - d->vertex_extremes[0],
 		d->vertex_extremes[5] - d->vertex_extremes[2]);
 	fclose(fp);
+	if ((d->faces.size == 0) || (d->vertices.size == 0))
+		printf("This doesn't seem to be a valid OBJ file.\n");
 }
