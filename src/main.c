@@ -57,7 +57,10 @@ void	loop(t_data *d)
 
 void	exit_scop(t_data *d, int exit_status)
 {
+	glfwDestroyWindow(d->window);
 	glfwTerminate();
+	free(d->vertices.array);
+	free(d->faces.array);
 	free(d);
 	exit(exit_status);
 }
