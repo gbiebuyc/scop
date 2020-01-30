@@ -19,7 +19,7 @@ SRC = src/main.c \
 	src/load_shader.c \
 	src/events.c \
 	src/init_gl.c \
-	src/exit_prog.c \
+	src/exit.c \
 	glad/src/glad.c
 OBJ = $(SRC:.c=.o)
 UNAME = $(shell uname -s)
