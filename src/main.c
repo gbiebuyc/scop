@@ -55,28 +55,12 @@ void	loop(t_data *d)
 	}
 }
 
-void	exit_scop(t_data *d, int exit_status)
-{
-	glfwDestroyWindow(d->window);
-	glfwTerminate();
-	free(d->vertices.array);
-	free(d->faces.array);
-	free(d);
-	exit(exit_status);
-}
-
-void	exit_scop_2(t_data *d, FILE *f, int exit_status)
-{
-	fclose(f);
-	exit_scop(d, exit_status);
-}
-
 int		main(int ac, char **av)
 {
 	t_data	*d;
 
 	if (!(d = calloc(1, sizeof(t_data))))
-		exit_scop(d, printf("calloc fail\n"));
+		exit(printf("calloc fail\n"));
 	parse_args(d, ac, av);
 	parse_obj(d);
 	init_gl(d);
