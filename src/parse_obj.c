@@ -46,7 +46,8 @@ void	face(t_data *d, char *line)
 	int f[3];
 
 	f[0] = strtol(line, &line, 10) - 1;
-	line = strchr(line, ' ');
+	if (!(line = strchr(line, ' ')))
+		return ;
 	f[1] = strtol(line, &line, 10) - 1;
 	line = strchr(line, ' ');
 	while (line && (f[2] = strtol(line, &line, 10)))
