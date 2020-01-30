@@ -64,7 +64,8 @@ void	parse_obj(t_data *d)
 	char	line[100];
 	float	v[3];
 
-	fp = fopen(d->objfilename, "rb");
+	if (!(fp = fopen(d->objfilename, "rb")))
+		exit_scop(d, printf("fopen error: %s\n", d->objfilename));
 	d->f = fp;
 	while (fgets(line, 100, fp))
 	{
