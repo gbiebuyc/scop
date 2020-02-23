@@ -15,11 +15,10 @@
 void	init_gl_2(t_data *d)
 {
 	GLuint vbo;
-	GLuint vao;
 	GLuint ebo;
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	glGenVertexArrays(1, &d->model_vao);
+	glBindVertexArray(d->model_vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER,

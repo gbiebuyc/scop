@@ -69,9 +69,9 @@ void	load_shader_prog(t_data *d)
 	int		fragment_shader;
 
 	vertex_shader = load_shader(d,
-		"./resources/vertexshader.glsl", GL_VERTEX_SHADER);
+		"./resources/model_vshader.glsl", GL_VERTEX_SHADER);
 	fragment_shader = load_shader(d,
-		"./resources/fragmentshader.glsl", GL_FRAGMENT_SHADER);
+		"./resources/model_fshader.glsl", GL_FRAGMENT_SHADER);
 	d->shader_prog = glCreateProgram();
 	glAttachShader(d->shader_prog, vertex_shader);
 	glAttachShader(d->shader_prog, fragment_shader);

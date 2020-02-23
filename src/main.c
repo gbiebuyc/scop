@@ -19,7 +19,16 @@ void	parse_args(t_data *d, int ac, char **av)
 	d->objfilename = av[1];
 }
 
-void	draw(t_data *d)
+void	draw_background(t_data *d)
+{
+	glDisable(GL_DEPTH_TEST);
+	glUseProgram(d->bg_shader_prog);
+	glBindVertexArray(d->bg_vao);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void	draw_model(t_data *d)
 {
 	float	*model;
 	float	*view;
@@ -27,6 +36,8 @@ void	draw(t_data *d)
 	int		width;
 	int		height;
 
+	glUseProgram(d->shader_prog);
+	glBindVertexArray(d->model_vao);
 	glfwGetFramebufferSize(d->window, &width, &height);
 	view = mat_look_at(d->pos);
 	projection = mat_projection(width / (float)height);
@@ -38,11 +49,8 @@ void	draw(t_data *d)
 	glUniformMatrix4fv(d->view_loc, 1, GL_TRUE, view);
 	glUniformMatrix4fv(d->projection_loc, 1, GL_TRUE, projection);
 	glUniformMatrix4fv(d->model_loc, 1, GL_TRUE, model);
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glDrawElements(GL_TRIANGLES, d->faces.size / sizeof(uint32_t),
 		GL_UNSIGNED_INT, 0);
-	glfwSwapBuffers(d->window);
 }
 
 void	loop(t_data *d)
@@ -51,7 +59,10 @@ void	loop(t_data *d)
 	{
 		glfwPollEvents();
 		handle_events(d);
-		draw(d);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		draw_background(d);
+		draw_model(d);
+		glfwSwapBuffers(d->window);
 	}
 }
 
@@ -66,6 +77,7 @@ int		main(int ac, char **av)
 	init_gl(d);
 	load_shader_prog(d);
 	load_texture(d);
+	init_background(d);
 	loop(d);
 	exit_scop(d, EXIT_SUCCESS);
 	return (0);
