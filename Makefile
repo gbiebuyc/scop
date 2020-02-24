@@ -24,7 +24,7 @@ SRC = src/main.c \
 	glad/src/glad.c
 OBJ = $(SRC:.c=.o)
 UNAME = $(shell uname -s)
-CFLAGS = -I ./glfw/include -I ./glad/include
+CFLAGS = -I ./glfw/include -I ./glad/include -Wall -Wextra -Werror
 ifneq (, $(findstring MINGW, $(UNAME)))
 	LDFLAGS = -L ./glfw/lib-mingw -lglfw3 -lgdi32
 else ifeq ($(UNAME), Darwin)

@@ -41,6 +41,7 @@ void	handle_events(t_data *d)
 
 void	framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
+	(void)window;
 	glViewport(0, 0, width, height);
 }
 
@@ -57,6 +58,7 @@ void	key_callback(GLFWwindow *window, int key, int scancode, int action)
 {
 	t_data *d;
 
+	(void)scancode;
 	d = glfwGetWindowUserPointer(window);
 	if (key == GLFW_KEY_T && action == GLFW_PRESS)
 		transition_toggle(d, 1);
