@@ -11,18 +11,17 @@
 # **************************************************************************** #
 
 NAME = scop
-SRC = src/main.c \
-	src/matrices.c \
-	src/matrix_transformations.c \
-	src/parse_obj.c \
-	src/load_texture.c \
-	src/load_shader.c \
-	src/events.c \
-	src/init_gl.c \
-	src/background.c \
-	src/exit.c \
-	glad/src/glad.c
-OBJ = $(SRC:.c=.o)
+SRC = main.c \
+	matrices.c \
+	matrix_transformations.c \
+	parse_obj.c \
+	load_texture.c \
+	load_shader.c \
+	events.c \
+	init_gl.c \
+	background.c \
+	exit.c
+OBJ = $(addprefix ./obj/, $(SRC:.c=.o))
 UNAME = $(shell uname -s)
 CFLAGS = -I ./glfw/include -I ./glad/include -Wall -Wextra -Werror
 ifneq (, $(findstring MINGW, $(UNAME)))
@@ -33,16 +32,24 @@ else ifeq ($(UNAME), Darwin)
 endif
 .PHONY: all clean fclean re
 
-all: $(NAME)
+all: ./obj $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) -o $(NAME) $(OBJ) $(LDFLAGS)
+./obj:
+	mkdir -p ./obj
+
+./obj/%.o: ./src/%.c
+	$(CC) $(CFLAGS) -o $@ -c $<
+
+$(NAME): $(OBJ) ./obj/glad.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+./obj/glad.o: glad/src/glad.c
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-	rm -rf $(OBJ)
+	rm -rf ./obj
 
-fclean:
-	rm -rf $(OBJ)
+fclean: clean
 	rm -rf $(NAME)
 
 re: fclean all
