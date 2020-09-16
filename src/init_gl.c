@@ -33,12 +33,20 @@ void	init_gl_2(t_data *d)
 	glEnable(GL_DEPTH_TEST);
 }
 
+void	error_callback(int err_code, const char *description)
+{
+	(void)err_code;
+	printf("%s\n", description);
+}
+
 void	init_gl(t_data *d)
 {
+	setenv("LIBGL_ALWAYS_SOFTWARE", "1", 1);
+	glfwSetErrorCallback(error_callback);
 	glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, GLFW_FALSE);
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	d->window = glfwCreateWindow(800, 600,
@@ -47,7 +55,7 @@ void	init_gl(t_data *d)
 	if (d->window == NULL)
 		exit_scop(d, printf("Failed to create GLFW window\n"));
 	glfwSetWindowUserPointer(d->window, d);
-	glfwSetKeyCallback(d->window, (GLFWkeyfun)key_callback);
+	glfwSetKeyCallback(d->window, (GLFWkeyfun)(intptr_t) & key_callback);
 	glfwMakeContextCurrent(d->window);
 	glfwSetFramebufferSizeCallback(d->window, framebuffer_size_callback);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

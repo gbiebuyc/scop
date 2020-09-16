@@ -15,7 +15,7 @@
 void	parse_args(t_data *d, int ac, char **av)
 {
 	if (ac != 2)
-		exit_scop(d, printf("usage: %s obj_file\n\n", av[0]));
+		exit_scop(d, printf("usage example: ./scop resources/42.obj\n\n"));
 	d->objfilename = av[1];
 }
 

@@ -15,17 +15,21 @@
 char	*read_file_into_mem(t_data *d, char *filename)
 {
 	FILE	*f;
-	size_t	size;
+	long	size;
 	char	*buf;
 
 	if (!(f = fopen(filename, "rb")))
 		exit_scop(d, printf("open fail: %s\n", filename));
-	fseek(f, 0, SEEK_END);
-	size = ftell(f);
-	fseek(f, 0, SEEK_SET);
+	if (fseek(f, 0, SEEK_END) == -1)
+		exit_scop_2(d, f, printf("fseek fail\n"));
+	if ((size = ftell(f)) == -1)
+		exit_scop_2(d, f, printf("ftell fail\n"));
+	if (fseek(f, 0, SEEK_SET) == -1)
+		exit_scop_2(d, f, printf("fseek fail\n"));
 	if (!(buf = malloc(size + 1)))
 		exit_scop_2(d, f, printf("malloc fail\n"));
-	fread(buf, size, 1, f);
+	if (!(fread(buf, size, 1, f)))
+		exit_scop_2(d, f, printf("fread fail\n"));
 	buf[size] = '\0';
 	fclose(f);
 	return (buf);
@@ -69,9 +73,9 @@ void	load_shader_prog(t_data *d)
 	int		fragment_shader;
 
 	vertex_shader = load_shader(d,
-		"./resources/model_vshader.glsl", GL_VERTEX_SHADER);
+		"./shaders/model_vshader.glsl", GL_VERTEX_SHADER);
 	fragment_shader = load_shader(d,
-		"./resources/model_fshader.glsl", GL_FRAGMENT_SHADER);
+		"./shaders/model_fshader.glsl", GL_FRAGMENT_SHADER);
 	d->shader_prog = glCreateProgram();
 	glAttachShader(d->shader_prog, vertex_shader);
 	glAttachShader(d->shader_prog, fragment_shader);

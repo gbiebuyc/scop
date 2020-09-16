@@ -20,9 +20,9 @@ void	bg_load_shader_prog(t_data *d)
 	int		fragment_shader;
 
 	vertex_shader = load_shader(d,
-		"./resources/bg_vshader.glsl", GL_VERTEX_SHADER);
+		"./shaders/bg_vshader.glsl", GL_VERTEX_SHADER);
 	fragment_shader = load_shader(d,
-		"./resources/bg_fshader.glsl", GL_FRAGMENT_SHADER);
+		"./shaders/bg_fshader.glsl", GL_FRAGMENT_SHADER);
 	d->bg_shader_prog = glCreateProgram();
 	glAttachShader(d->bg_shader_prog, vertex_shader);
 	glAttachShader(d->bg_shader_prog, fragment_shader);

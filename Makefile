@@ -12,23 +12,25 @@
 
 NAME = scop
 SRC = main.c \
-	matrices.c \
-	matrix_transformations.c \
-	parse_obj.c \
-	load_texture.c \
-	load_shader.c \
-	events.c \
-	init_gl.c \
-	background.c \
-	exit.c
+      matrices.c \
+      matrix_transformations.c \
+      parse_obj.c \
+      load_texture.c \
+      load_shader.c \
+      events.c \
+      init_gl.c \
+      background.c \
+      exit.c
 OBJ = $(addprefix ./obj/, $(SRC:.c=.o))
 UNAME = $(shell uname -s)
 CFLAGS = -I ./glfw/include -I ./glad/include -Wall -Wextra -Werror
 ifneq (, $(findstring MINGW, $(UNAME)))
-	LDFLAGS = -L ./glfw/lib-mingw -lglfw3 -lgdi32
+    LDFLAGS = -L ./glfw/lib-mingw -lglfw3 -lgdi32
 else ifeq ($(UNAME), Darwin)
-	# https://www.glfw.org/docs/3.0/build.html#build_link_osx
-	LDFLAGS = -L ./glfw/lib-macos -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+    # https://www.glfw.org/docs/3.0/build.html#build_link_osx
+    LDFLAGS = -L ./glfw/lib-macos -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+else ifeq ($(UNAME), Linux)
+    LDFLAGS = -L ./glfw/lib-linux -lglfw3 -lm -ldl -lX11 -lpthread
 endif
 .PHONY: all clean fclean re
 

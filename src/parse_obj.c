@@ -82,5 +82,5 @@ void	parse_obj(t_data *d)
 		d->vertex_extremes[5] - d->vertex_extremes[2]);
 	fclose(fp);
 	if ((d->faces.size == 0) || (d->vertices.size == 0))
-		printf("This doesn't seem to be a valid OBJ file.\n");
+		printf("This file contains no geometry data.\n");
 }
