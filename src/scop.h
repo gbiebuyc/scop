@@ -71,11 +71,8 @@ void			load_texture(t_data *d);
 GLuint			load_shader(t_data *d, char *filename, GLenum shadertype);
 void			load_shader_prog(t_data *d);
 void			handle_events(t_data *d);
-void			framebuffer_size_callback(
-	GLFWwindow *window, int width, int height);
+void			framebuffer_size_callback(GLFWwindow *window, int w, int h);
 void			transition_toggle(t_data *d, int targetstate);
-void			key_callback(
-	GLFWwindow *window, int key, int scancode, int action);
 void			init_gl(t_data *d);
 void			exit_scop(t_data *d, int exit_status);
 void			exit_scop_2(t_data *d, FILE *f, int exit_status);

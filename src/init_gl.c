@@ -55,7 +55,6 @@ void	init_gl(t_data *d)
 	if (d->window == NULL)
 		exit_scop(d, printf("Failed to create GLFW window\n"));
 	glfwSetWindowUserPointer(d->window, d);
-	glfwSetKeyCallback(d->window, (GLFWkeyfun)(intptr_t) & key_callback);
 	glfwMakeContextCurrent(d->window);
 	glfwSetFramebufferSizeCallback(d->window, framebuffer_size_callback);
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
