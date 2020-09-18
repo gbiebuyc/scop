@@ -76,3 +76,13 @@ float	*mat_translate(float vec[3], float mat[16])
 		0, 0, 0, 1});
 	return (mat);
 }
+
+float	*mat_scale(float scale, float mat[16])
+{
+	mat_mul(mat, (float[16]){
+		scale, 0, 0, 0,
+		0, scale, 0, 0,
+		0, 0, scale, 0,
+		0, 0, 0, 1});
+	return (mat);
+}

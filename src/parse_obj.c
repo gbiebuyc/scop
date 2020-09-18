@@ -78,8 +78,10 @@ void	parse_obj(t_data *d)
 	d->offset[0] = -(d->vertex_extremes[3] + d->vertex_extremes[0]) / 2.0;
 	d->offset[1] = -(d->vertex_extremes[4] + d->vertex_extremes[1]) / 2.0;
 	d->offset[2] = -(d->vertex_extremes[5] + d->vertex_extremes[2]) / 2.0;
-	d->pos[Z] = fmaxf(d->vertex_extremes[3] - d->vertex_extremes[0],
-		d->vertex_extremes[5] - d->vertex_extremes[2]);
+	float magnitude = d->vertex_extremes[3] - d->vertex_extremes[0];
+	magnitude = fmaxf(magnitude, d->vertex_extremes[4] - d->vertex_extremes[1]);
+	magnitude = fmaxf(magnitude, d->vertex_extremes[5] - d->vertex_extremes[2]);
+	d->scale = 10.0f / magnitude;
 	fclose(fp);
 	if ((d->faces.size == 0) || (d->vertices.size == 0))
 		printf("This file contains no geometry data.\n");

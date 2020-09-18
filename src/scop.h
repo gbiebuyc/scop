@@ -38,6 +38,7 @@ typedef struct	s_data
 {
 	char		*objfilename;
 	float		pos[3];
+	float		scale;
 	double		last_frame;
 	GLFWwindow	*window;
 	t_dynarray	vertices;
@@ -63,6 +64,7 @@ void			mat_mul(float a[16], float b[16]);
 void			mat_print(float mat[16]);
 float			*mat_rotate(char axis, float angle, float mat[16]);
 float			*mat_translate(float vec[3], float mat[16]);
+float			*mat_scale(float scale, float mat[16]);
 float			*mat_identity(float mat[16]);
 float			*mat_projection(float ratio);
 float			*mat_look_at(float pos[3]);

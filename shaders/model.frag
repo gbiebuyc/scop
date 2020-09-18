@@ -16,7 +16,7 @@ vec4 effect_1() {
 }
 
 vec4 effect_2() {
-	vec3 color = vec3(0.5f, 0, 0);
+	vec3 color = vec3(.5, .5, .5);
 	vec3 xTangent = dFdx( FragPos );
 	vec3 yTangent = dFdy( FragPos );
 	vec3 faceNormal = normalize( cross( xTangent, yTangent ) );
