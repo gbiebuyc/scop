@@ -59,6 +59,24 @@ void	face(t_data *d, char *line)
 	}
 }
 
+void	center_and_scale_vertices(float offset[3], float scale,
+		float *vertices, int count)
+{
+	int i;
+
+	i = 0;
+	while (i < count)
+	{
+		vertices[i + 0] += offset[0];
+		vertices[i + 0] *= scale;
+		vertices[i + 1] += offset[1];
+		vertices[i + 1] *= scale;
+		vertices[i + 2] += offset[2];
+		vertices[i + 2] *= scale;
+		i += 3;
+	}
+}
+
 void	parse_obj(t_data *d)
 {
 	FILE	*fp;
@@ -75,6 +93,9 @@ void	parse_obj(t_data *d)
 		else if (strncmp(line, "f ", 2) == 0)
 			face(d, line + 2);
 	}
+	fclose(fp);
+	if ((d->faces.size == 0) || (d->vertices.size == 0))
+		printf("This file contains no geometry data.\n");
 	d->offset[0] = -(d->vertex_extremes[3] + d->vertex_extremes[0]) / 2.0;
 	d->offset[1] = -(d->vertex_extremes[4] + d->vertex_extremes[1]) / 2.0;
 	d->offset[2] = -(d->vertex_extremes[5] + d->vertex_extremes[2]) / 2.0;
@@ -82,7 +103,5 @@ void	parse_obj(t_data *d)
 	magnitude = fmaxf(magnitude, d->vertex_extremes[4] - d->vertex_extremes[1]);
 	magnitude = fmaxf(magnitude, d->vertex_extremes[5] - d->vertex_extremes[2]);
 	d->scale = 10.0f / magnitude;
-	fclose(fp);
-	if ((d->faces.size == 0) || (d->vertices.size == 0))
-		printf("This file contains no geometry data.\n");
+	center_and_scale_vertices(d->offset, d->scale, (float*)d->vertices.array, d->vertices.size / sizeof(float));
 }

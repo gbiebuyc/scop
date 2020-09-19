@@ -42,9 +42,7 @@ void	draw_model(t_data *d)
 	view = mat_look_at(d->pos);
 	projection = mat_projection(width / (float)height);
 	model = mat_identity((float[16]){0});
-	model = mat_scale(d->scale, model);
 	model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-	model = mat_translate(d->offset, model);
 	glUniform1f(d->mix_value_loc, d->mix_value);
 	glUniform1iv(d->transition_loc, 2, d->transition);
 	glUniformMatrix4fv(d->view_loc, 1, GL_TRUE, view);

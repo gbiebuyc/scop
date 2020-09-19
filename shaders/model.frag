@@ -12,7 +12,7 @@ vec4 effect_0() {
 }
 
 vec4 effect_1() {
-	return (texture(ourTexture, vec2(pos.z, -pos.y)));
+	return (texture(ourTexture, vec2(pos.z, -pos.y+5.5f) / 1.5f));
 }
 
 vec4 effect_2() {
