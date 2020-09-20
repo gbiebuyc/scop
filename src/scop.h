@@ -58,9 +58,15 @@ typedef struct	s_data
 	GLint		projection_loc;
 	GLint		mix_value_loc;
 	GLint		transition_loc;
+	GLint		cam_pos_loc;
 	FILE		*f;
 	GLuint		model_vao;
 	GLuint		bg_vao;
+	GLuint		cubemap_id;
+	GLuint		skybox_shader_prog;
+	GLuint		skybox_vao;
+	GLuint		skybox_projection_loc;
+	GLuint		skybox_view_loc;
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);
@@ -73,8 +79,7 @@ float			*mat_projection(float ratio);
 float			*mat_look_at(float pos[3]);
 void			parse_obj(t_data *d);
 void			load_texture(t_data *d);
-GLuint			load_shader(t_data *d, char *filename, GLenum shadertype);
-void			load_shader_prog(t_data *d);
+GLuint			create_shader_prog(t_data *d, char *vs, char *fs);
 void			handle_events(t_data *d);
 void			framebuffer_size_callback(GLFWwindow *window, int w, int h);
 void			transition_toggle(t_data *d, int targetstate);

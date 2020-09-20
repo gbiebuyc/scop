@@ -12,6 +12,8 @@
 
 #include "scop.h"
 
+GLuint			load_shader(t_data *d, char *filename, GLenum shadertype);
+
 void	bg_load_shader_prog(t_data *d)
 {
 	int		success;
