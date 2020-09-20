@@ -20,11 +20,13 @@ SRC = main.c \
       events.c \
       init_gl.c \
       background.c \
+      dynarray.c \
       exit.c
 OBJ = $(addprefix ./obj/, $(SRC:.c=.o))
 UNAME = $(shell uname -s)
 CFLAGS = -I ./glfw/include -I ./glad/include -Wall -Wextra -Werror
 ifneq (, $(findstring MINGW, $(UNAME)))
+	NAME := $(NAME).exe
     LDFLAGS = -L ./glfw/lib-mingw -lglfw3 -lgdi32
 else ifeq ($(UNAME), Darwin)
     # https://www.glfw.org/docs/3.0/build.html#build_link_osx

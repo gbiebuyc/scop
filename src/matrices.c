@@ -26,7 +26,7 @@ float	*mat_identity(float mat[16])
 }
 
 #define FOV 60
-#define NEAR 0.1
+#define NEAR 0.01
 #define FAR 100
 
 float	*mat_projection(float ratio)

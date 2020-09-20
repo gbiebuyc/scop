@@ -16,7 +16,7 @@ void	parse_args(t_data *d, int ac, char **av)
 {
 	if (ac != 2)
 		exit_scop(d, printf("usage example: ./scop resources/42.obj\n\n"));
-	d->objfilename = av[1];
+	d->obj_path = av[1];
 }
 
 void	draw_background(t_data *d)
@@ -48,8 +48,7 @@ void	draw_model(t_data *d)
 	glUniformMatrix4fv(d->view_loc, 1, GL_TRUE, view);
 	glUniformMatrix4fv(d->projection_loc, 1, GL_TRUE, projection);
 	glUniformMatrix4fv(d->model_loc, 1, GL_TRUE, model);
-	glDrawElements(GL_TRIANGLES, d->faces.size / sizeof(uint32_t),
-		GL_UNSIGNED_INT, 0);
+	glDrawArrays(GL_TRIANGLES, 0, d->gl_arr_buf.count * 3);
 }
 
 void	loop(t_data *d)
@@ -79,7 +78,7 @@ int		main(int ac, char **av)
 	init_background(d);
 	d->pos[X] = 0;
 	d->pos[Y] = 0;
-	d->pos[Z] = 10;
+	d->pos[Z] = 1;
 	loop(d);
 	exit_scop(d, EXIT_SUCCESS);
 	return (0);

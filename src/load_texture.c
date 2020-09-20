@@ -45,7 +45,7 @@ void	load_texture(t_data *d)
 	int		h;
 	uint8_t	*data;
 
-	data = read_ppm(d, "./shaders/texture.ppm", &w, &h);
+	data = read_ppm(d, d->tex_path, &w, &h);
 	glGenTextures(1, &d->texture);
 	glBindTexture(GL_TEXTURE_2D, d->texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,

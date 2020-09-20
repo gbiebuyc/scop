@@ -41,7 +41,7 @@ void	handle_events(t_data *d)
 	now = glfwGetTime();
 	dt = (now - d->last_frame);
 	d->last_frame = now;
-	speed = 6.0 * dt;
+	speed = 0.6 * dt;
 	d->mix_value = fmax(d->mix_value - 1.8 * dt, 0);
 	if (glfwGetKey(d->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(d->window, true);

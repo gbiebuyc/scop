@@ -17,7 +17,7 @@ void	exit_scop(t_data *d, int exit_status)
 	glfwDestroyWindow(d->window);
 	glfwTerminate();
 	free(d->vertices.array);
-	free(d->faces.array);
+	free(d->gl_arr_buf.array);
 	free(d);
 	exit(exit_status);
 }

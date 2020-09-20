@@ -1,6 +1,8 @@
 #version 330 core
 out vec4 FragColor;
 in vec3 pos;
+in vec3 normal;
+in vec2 texCoord;
 in vec3 FragPos;
 uniform sampler2D ourTexture;
 uniform float mix_value;
@@ -12,14 +14,28 @@ vec4 effect_0() {
 }
 
 vec4 effect_1() {
-	return (texture(ourTexture, vec2(pos.z, -pos.y+5.5f) / 1.5f));
+	vec2 p;
+	if (isnan(texCoord.x)) {
+		float tex_scale = 3.0f;
+		p = vec2(pos.z, -pos.y) * tex_scale;
+		p.y += 0.5f;
+	} else {
+		p = vec2(texCoord.x, -texCoord.y);
+	}
+	return (texture(ourTexture, p));
 }
 
 vec4 effect_2() {
-	vec3 color = vec3(.5, .5, .5);
-	vec3 xTangent = dFdx( FragPos );
-	vec3 yTangent = dFdy( FragPos );
-	vec3 faceNormal = normalize( cross( xTangent, yTangent ) );
+	//vec3 color = vec3(.5, .5, .5);
+	vec3 color = effect_1().rgb;
+	vec3 faceNormal;
+	if (isnan(normal.x)) {
+		vec3 xTangent = dFdx( FragPos );
+		vec3 yTangent = dFdy( FragPos );
+		faceNormal = normalize( cross( xTangent, yTangent ) );
+	} else {
+		faceNormal = normal;
+	}
 	vec3 lightPos  = vec3(0, 1, 3);
 	vec3 lightColor = vec3(1, 1, 1);
 	vec3 lightDir = normalize(lightPos  - FragPos);

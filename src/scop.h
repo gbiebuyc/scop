@@ -22,6 +22,7 @@
 # include <stdint.h>
 # include <unistd.h>
 # include <string.h>
+# include <libgen.h>
 
 # define X 0
 # define Y 1
@@ -32,19 +33,21 @@ typedef struct	s_dynarray
 	void		*array;
 	size_t		size;
 	size_t		capacity;
+	long long	count;
 }				t_dynarray;
 
 typedef struct	s_data
 {
-	char		*objfilename;
+	char		*obj_path;
+	char		*tex_path;
 	float		pos[3];
-	float		scale;
 	double		last_frame;
 	GLFWwindow	*window;
 	t_dynarray	vertices;
-	t_dynarray	faces;
+	t_dynarray	normals;
+	t_dynarray	tex_coords;
+	t_dynarray	gl_arr_buf;
 	float		vertex_extremes[6];
-	float		offset[3];
 	int			transition[2];
 	float		mix_value;
 	GLuint		texture;
@@ -79,5 +82,6 @@ void			init_gl(t_data *d);
 void			exit_scop(t_data *d, int exit_status);
 void			exit_scop_2(t_data *d, FILE *f, int exit_status);
 void			init_background(t_data *d);
+void			dynarray_append(t_data *d, t_dynarray *da, void *e, size_t sz);
 
 #endif
