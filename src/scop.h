@@ -88,5 +88,7 @@ void			exit_scop(t_data *d, int exit_status);
 void			exit_scop_2(t_data *d, FILE *f, int exit_status);
 void			init_background(t_data *d);
 void			dynarray_append(t_data *d, t_dynarray *da, void *e, size_t sz);
+int				modulo(int a, int b);
+void			key_callback(GLFWwindow *w, int key, int scancode, int action);
 
 #endif

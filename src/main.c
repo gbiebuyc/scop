@@ -19,14 +19,14 @@ void	parse_args(t_data *d, int ac, char **av)
 	d->obj_path = av[1];
 }
 
-//void	draw_background(t_data *d)
-//{
-//	glDisable(GL_DEPTH_TEST);
-//	glUseProgram(d->bg_shader_prog);
-//	glBindVertexArray(d->bg_vao);
-//	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-//	glEnable(GL_DEPTH_TEST);
-//}
+void	draw_background(t_data *d)
+{
+	glDisable(GL_DEPTH_TEST);
+	glUseProgram(d->bg_shader_prog);
+	glBindVertexArray(d->bg_vao);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	glEnable(GL_DEPTH_TEST);
+}
 
 void	draw_skybox(t_data *d, float *view, float *projection)
 {
@@ -52,7 +52,8 @@ void	draw_model(t_data *d)
 	projection = mat_projection(width / (float)height);
 	model = mat_identity((float[16]){0});
 	model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-	draw_skybox(d, view, projection);
+	if (d->transition[1] == 2 || d->transition[1] == 3)
+		draw_skybox(d, view, projection);
 
 	glUseProgram(d->shader_prog);
 	glBindVertexArray(d->model_vao);
@@ -72,6 +73,8 @@ void	loop(t_data *d)
 		glfwPollEvents();
 		handle_events(d);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (d->transition[1] == 0 || d->transition[1] == 1)
+			draw_background(d);
 		draw_model(d);
 		glfwSwapBuffers(d->window);
 	}

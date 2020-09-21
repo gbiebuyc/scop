@@ -5,21 +5,19 @@ in vec3 normal;
 in vec2 texCoord;
 in vec3 posWorldSpace;
 in vec3 posCamSpace;
-//uniform sampler2D ourTexture;
-uniform samplerCube ourTexture;
+uniform sampler2D ourTexture;
+uniform samplerCube skybox;
 uniform float mix_value;
 uniform int transition[2];
 uniform vec3 cameraPos;
+vec3 theNormal;
 
-vec4 effect_0() {
+vec4 effect_shades_of_grey() {
 	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;
 	return (vec4(factor, factor, factor, 1));
 }
 
-vec4 effect_1(vec3 theNormal) {
-	vec3 I = normalize(posWorldSpace - cameraPos);
-	vec3 R = reflect(I, normalize(theNormal));
-	return texture(ourTexture, R);
+vec4 effect_texture() {
 	vec2 p;
 	if (isnan(texCoord.x)) {
 		float tex_scale = 3.0f;
@@ -28,13 +26,10 @@ vec4 effect_1(vec3 theNormal) {
 	} else {
 		p = vec2(texCoord.x, -texCoord.y);
 	}
-	//return (texture(ourTexture, p));
-	return vec4(1,0,0,0);
+	return (texture(ourTexture, p));
 }
 
-vec4 effect_2(vec3 theNormal) {
-	//vec3 color = vec3(.5, .5, .5);
-	vec3 color = effect_1(theNormal).rgb;
+vec4 effect_lighting(vec3 color) {
 	vec3 lightPos  = vec3(0, 1, 3);
 	vec3 lightColor = vec3(1, 1, 1);
 	vec3 lightDir = normalize(lightPos  - posCamSpace);
@@ -50,8 +45,29 @@ vec4 effect_2(vec3 theNormal) {
 	return (vec4(((ambient + diffuse + specular) * color), 1));
 }
 
+vec4 effect_reflection() {
+	vec3 I = normalize(posWorldSpace - cameraPos);
+	vec3 R = reflect(I, normalize(theNormal));
+	return texture(skybox, R);
+}
+
+vec4 effect_refraction() {
+	float ratio = 1.00 / 1.52;
+	vec3 I = normalize(posWorldSpace - cameraPos);
+	vec3 R = refract(I, normalize(theNormal), ratio);
+	return texture(skybox, R);
+}
+
+vec4 get_effect(int i) {
+	switch (i) {
+		case 0: return effect_shades_of_grey();
+		case 1: return effect_lighting(effect_texture().rgb);
+		case 2: return effect_reflection();
+		case 3: return effect_refraction();
+	}
+}
+
 void main() {
-	vec3 theNormal;
 	if (isnan(normal.x)) {
 		vec3 xTangent = dFdx( posCamSpace );
 		vec3 yTangent = dFdy( posCamSpace );
@@ -59,9 +75,9 @@ void main() {
 	} else {
 		theNormal = normal;
 	}
-	vec4 results[3];
-	results[0] = effect_0();
-	results[1] = effect_1(theNormal);
-	results[2] = effect_2(theNormal);
-	FragColor = mix(results[transition[1]], results[transition[0]], mix_value);
+	if (mix_value != 0)
+		FragColor = mix(get_effect(transition[1]), get_effect(transition[0]), mix_value);
+	else
+		FragColor = get_effect(transition[1]);
+	//FragColor.a = 0.5f;
 }

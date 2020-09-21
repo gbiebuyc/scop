@@ -21,6 +21,7 @@ SRC = main.c \
       init_gl.c \
       background.c \
       dynarray.c \
+      utils.c \
       exit.c
 OBJ = $(addprefix ./obj/, $(SRC:.c=.o))
 UNAME = $(shell uname -s)
