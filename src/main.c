@@ -84,6 +84,7 @@ uint8_t	*read_ppm(t_data *d, char *filename, int *w, int *h);
 
 void	cubemap(t_data *d) {
 	glGenTextures(1, &d->cubemap_id);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, d->cubemap_id);
 	int		w;
 	int		h;
@@ -163,6 +164,8 @@ void	cubemap(t_data *d) {
 			d, "./shaders/skybox.vert", "./shaders/skybox.frag");
 	d->skybox_view_loc = glGetUniformLocation(d->skybox_shader_prog, "view");
 	d->skybox_projection_loc = glGetUniformLocation(d->skybox_shader_prog, "projection");
+	glUseProgram(d->skybox_shader_prog);
+	glUniform1i(glGetUniformLocation(d->skybox_shader_prog, "skybox"), 1);
 }
 
 void	get_uniform_locations(t_data *d)
@@ -173,6 +176,9 @@ void	get_uniform_locations(t_data *d)
 	d->mix_value_loc = glGetUniformLocation(d->shader_prog, "mix_value");
 	d->transition_loc = glGetUniformLocation(d->shader_prog, "transition");
 	d->cam_pos_loc = glGetUniformLocation(d->shader_prog, "cameraPos");
+	glUseProgram(d->shader_prog);
+	glUniform1i(glGetUniformLocation(d->shader_prog, "ourTexture"), 0);
+	glUniform1i(glGetUniformLocation(d->shader_prog, "skybox"), 1);
 }
 
 int		main(int ac, char **av)

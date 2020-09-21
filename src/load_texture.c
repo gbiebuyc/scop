@@ -47,6 +47,7 @@ void	load_texture(t_data *d)
 
 	data = read_ppm(d, d->tex_path, &w, &h);
 	glGenTextures(1, &d->texture);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, d->texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
 		w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
