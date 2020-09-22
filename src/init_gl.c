@@ -31,6 +31,7 @@ void	init_gl_2(t_data *d)
 	glEnable(GL_DEPTH_TEST);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_MULTISAMPLE);
 }
 
 void	error_callback(int err_code, const char *description)
@@ -49,6 +50,7 @@ void	init_gl(t_data *d)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 	d->window = glfwCreateWindow(800, 600,
 		"SCOP. Movement: W/A/S/D/Space/Shift, Texture: T, Shaders: Left/Right",
 		NULL, NULL);

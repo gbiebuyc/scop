@@ -62,8 +62,9 @@ vec4 get_effect(int i) {
 	switch (i) {
 		case 0: return effect_shades_of_grey();
 		case 1: return effect_lighting(effect_texture().rgb);
-		case 2: return effect_reflection();
-		case 3: return effect_refraction();
+		case 2: return effect_lighting(vec3(0.1f, 0.1f, 0.1f));
+		case 3: return effect_reflection();
+		case 4: return effect_refraction();
 	}
 }
 

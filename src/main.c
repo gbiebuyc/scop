@@ -52,8 +52,10 @@ void	draw_model(t_data *d)
 	projection = mat_projection(width / (float)height);
 	model = mat_identity((float[16]){0});
 	model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-	if (d->transition[1] == 2 || d->transition[1] == 3)
+	if (d->transition[1] >= 3)
 		draw_skybox(d, view, projection);
+	else
+		draw_background(d);
 
 	glUseProgram(d->shader_prog);
 	glBindVertexArray(d->model_vao);
@@ -63,7 +65,10 @@ void	draw_model(t_data *d)
 	glUniformMatrix4fv(d->projection_loc, 1, GL_TRUE, projection);
 	glUniformMatrix4fv(d->model_loc, 1, GL_TRUE, model);
 	glUniform3f(d->cam_pos_loc, d->pos[0], d->pos[1], d->pos[2]);
+	if (d->transition[1] == 2)
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	glDrawArrays(GL_TRIANGLES, 0, d->gl_arr_buf.count * 3);
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 }
 
 void	loop(t_data *d)
@@ -73,8 +78,6 @@ void	loop(t_data *d)
 		glfwPollEvents();
 		handle_events(d);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (d->transition[1] == 0 || d->transition[1] == 1)
-			draw_background(d);
 		draw_model(d);
 		glfwSwapBuffers(d->window);
 	}

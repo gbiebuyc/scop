@@ -54,7 +54,7 @@ void	transition_toggle(t_data *d, int targetstate)
 	d->mix_value = 1.0;
 }
 
-#define NUM_EFFECTS 4
+#define NUM_EFFECTS 5
 
 void	key_callback(GLFWwindow *window, int key, int scancode, int action)
 {
