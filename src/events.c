@@ -23,8 +23,6 @@ void	handle_events(t_data *d)
 	d->last_frame = now;
 	speed = 0.6 * dt;
 	d->mix_value = fmax(d->mix_value - 1.8 * dt, 0);
-	if (glfwGetKey(d->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(d->window, true);
 	if (glfwGetKey(d->window, GLFW_KEY_W) == GLFW_PRESS)
 		d->pos[Z] -= speed;
 	if (glfwGetKey(d->window, GLFW_KEY_S) == GLFW_PRESS)
@@ -62,6 +60,8 @@ void	key_callback(GLFWwindow *window, int key, int scancode, int action)
 
 	(void)scancode;
 	d = glfwGetWindowUserPointer(window);
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(d->window, true);
 	if (key == GLFW_KEY_T && action == GLFW_PRESS)
 		transition_toggle(d, 1);
 	if (key == GLFW_KEY_LEFT && (action == GLFW_PRESS || action == GLFW_REPEAT))
