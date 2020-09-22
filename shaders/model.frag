@@ -11,10 +11,29 @@ uniform float mix_value;
 uniform int transition[2];
 uniform vec3 cameraPos;
 vec3 theNormal;
+in vec3 v_barycentric; // barycentric coordinate inside the triangle
+
 
 vec4 effect_shades_of_grey() {
+	vec3 d = fwidth(v_barycentric);
+	float thickness = 1.0f;
+    vec3 a3 = smoothstep(vec3(0.0), d*thickness, v_barycentric);
+    float factor = min(min(a3.x, a3.y), a3.z);
+	return vec4(0.0, 0.0, 0.0, (1.0-factor)*0.95);
+	return mix(vec4(0.0), vec4(0.5), factor);
+
+/*
+	if(any(lessThan(v_barycentric, vec3(0.02)))){
+    return vec4(0.0, 0.0, 0.0, 1.0);
+}
+discard;
+	float f_thickness = 0.000000000000001;
+    vec3 f_width = fwidth(v_barycentric); // calculate derivative (divide f_thickness by this to have the line width constant in screen-space)
+    vec3 a = smoothstep(vec3(0.0), f_width*1.5, v_barycentric); // calculate alpha
+    return vec4(vec3(.0), min(min(a.x, a.y), a.z));
 	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;
 	return (vec4(factor, factor, factor, 1));
+	*/
 }
 
 vec4 effect_texture() {
@@ -37,7 +56,7 @@ vec4 effect_lighting(vec3 color) {
 	vec3 diffuse = diff * lightColor;
 	float ambientStrength = 0.1;
 	vec3 ambient = ambientStrength * lightColor;
-	float specularStrength = 0.5;
+	float specularStrength = 0.0;
 	vec3 viewDir = normalize( - posCamSpace);
 	vec3 reflectDir = reflect(-lightDir, theNormal); 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
@@ -60,7 +79,11 @@ vec4 effect_refraction() {
 
 vec4 get_effect(int i) {
 	switch (i) {
-		case 0: return effect_shades_of_grey();
+		case 0:
+			vec4 v = effect_lighting(vec3(.1f));
+			if ( effect_shades_of_grey().a < .5)
+				discard;
+			return v;
 		case 1: return effect_lighting(effect_texture().rgb);
 		case 2: return effect_lighting(vec3(0.1f, 0.1f, 0.1f));
 		case 3: return effect_reflection();

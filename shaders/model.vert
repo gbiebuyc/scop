@@ -10,6 +10,7 @@ out vec3 normal;
 out vec2 texCoord;
 out vec3 posWorldSpace;
 out vec3 posCamSpace;
+out vec3 v_barycentric; // barycentric coordinate inside the triangle
 
 void main()
 {
@@ -19,4 +20,10 @@ void main()
 	posCamSpace = vec3(view * model * vec4(aPos, 1.0));
 	normal = mat3(transpose(inverse(model))) * aNormal;
 	texCoord = aTexCoord;
+	if (gl_VertexID % 3 == 0)
+		v_barycentric = vec3(1, 0, 0);
+	else if (gl_VertexID % 3 == 1)
+		v_barycentric = vec3(0, 1, 0);
+	else if (gl_VertexID % 3 == 2)
+		v_barycentric = vec3(0, 0, 1);
 }
