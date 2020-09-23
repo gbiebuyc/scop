@@ -56,19 +56,22 @@ GLuint	load_shader(t_data *d, char *filename, GLenum shadertype)
 	return (shader);
 }
 
-GLuint	create_shader_prog(t_data *d, char *vs, char *fs)
+GLuint	create_shader_prog(t_data *d, char *vs, char *gs, char *fs)
 {
 	int		success;
 	char	info_log[512];
-	int		vertex_shader;
-	int		fragment_shader;
+	GLuint	shaders[3];
 	GLuint	prog;
 
-	vertex_shader = load_shader(d, vs, GL_VERTEX_SHADER);
-	fragment_shader = load_shader(d, fs, GL_FRAGMENT_SHADER);
+	shaders[0] = load_shader(d, vs, GL_VERTEX_SHADER);
+	if (gs)
+		shaders[1] = load_shader(d, gs, GL_GEOMETRY_SHADER);
+	shaders[2] = load_shader(d, fs, GL_FRAGMENT_SHADER);
 	prog = glCreateProgram();
-	glAttachShader(prog, vertex_shader);
-	glAttachShader(prog, fragment_shader);
+	glAttachShader(prog, shaders[0]);
+	if (gs)
+		glAttachShader(prog, shaders[1]);
+	glAttachShader(prog, shaders[2]);
 	glLinkProgram(prog);
 	glGetProgramiv(prog, GL_LINK_STATUS, &success);
 	if (!success)
@@ -76,7 +79,9 @@ GLuint	create_shader_prog(t_data *d, char *vs, char *fs)
 		glGetProgramInfoLog(prog, 512, NULL, info_log);
 		printf("%s", info_log);
 	}
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
+	glDeleteShader(shaders[0]);
+	if (gs)
+		glDeleteShader(shaders[1]);
+	glDeleteShader(shaders[2]);
 	return (prog);
 }

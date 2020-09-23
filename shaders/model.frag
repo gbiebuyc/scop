@@ -16,7 +16,7 @@ in vec3 v_barycentric; // barycentric coordinate inside the triangle
 
 vec4 effect_shades_of_grey() {
 	vec3 d = fwidth(v_barycentric);
-	float thickness = 1.0f;
+	float thickness = 5.0f;
     vec3 a3 = smoothstep(vec3(0.0), d*thickness, v_barycentric);
     float factor = min(min(a3.x, a3.y), a3.z);
 	return vec4(0.0, 0.0, 0.0, (1.0-factor)*0.95);

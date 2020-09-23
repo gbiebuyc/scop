@@ -52,6 +52,7 @@ typedef struct	s_data
 	float		mix_value;
 	GLuint		texture;
 	GLuint		shader_prog;
+	GLuint		wireframe_shader_prog;
 	GLuint		bg_shader_prog;
 	GLint		model_loc;
 	GLint		view_loc;
@@ -79,7 +80,7 @@ float			*mat_projection(float ratio);
 float			*mat_look_at(float pos[3]);
 void			parse_obj(t_data *d);
 void			load_texture(t_data *d);
-GLuint			create_shader_prog(t_data *d, char *vs, char *fs);
+GLuint			create_shader_prog(t_data *d, char *vs, char *gs, char *fs);
 void			handle_events(t_data *d);
 void			framebuffer_size_callback(GLFWwindow *window, int w, int h);
 void			transition_toggle(t_data *d, int targetstate);

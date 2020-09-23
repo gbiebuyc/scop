@@ -57,7 +57,10 @@ void	draw_model(t_data *d)
 	else
 		draw_background(d);
 
-	glUseProgram(d->shader_prog);
+	if (d->transition[1] == 0)
+		glUseProgram(d->wireframe_shader_prog);
+	else
+		glUseProgram(d->shader_prog);
 	glBindVertexArray(d->model_vao);
 	glUniform1f(d->mix_value_loc, d->mix_value);
 	glUniform1iv(d->transition_loc, 2, d->transition);
@@ -164,7 +167,7 @@ void	cubemap(t_data *d) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	d->skybox_shader_prog = create_shader_prog(
-			d, "./shaders/skybox.vert", "./shaders/skybox.frag");
+			d, "./shaders/skybox.vert", NULL, "./shaders/skybox.frag");
 	d->skybox_view_loc = glGetUniformLocation(d->skybox_shader_prog, "view");
 	d->skybox_projection_loc = glGetUniformLocation(d->skybox_shader_prog, "projection");
 	glUseProgram(d->skybox_shader_prog);
@@ -194,7 +197,9 @@ int		main(int ac, char **av)
 	parse_obj(d);
 	init_gl(d);
 	d->shader_prog = create_shader_prog(
-			d, "./shaders/model.vert", "./shaders/model.frag");
+			d, "./shaders/model.vert", NULL, "./shaders/model.frag");
+	d->wireframe_shader_prog = create_shader_prog(
+			d, "./shaders/model.vert", "./shaders/wireframe.geom", "./shaders/wireframe.frag");
 	get_uniform_locations(d);
 	load_texture(d);
 	cubemap(d);

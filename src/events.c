@@ -65,7 +65,7 @@ void	key_callback(GLFWwindow *window, int key, int scancode, int action)
 	if (key == GLFW_KEY_T && action == GLFW_PRESS)
 		transition_toggle(d, 1);
 	if (key == GLFW_KEY_LEFT && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		d->transition[1] = modulo(d->transition[1] - 1, NUM_EFFECTS);
+		d->transition[1] = 0;
 	if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT))
-		d->transition[1] = modulo(d->transition[1] + 1, NUM_EFFECTS);
+		d->transition[1] = 2;
 }
