@@ -28,9 +28,8 @@ void	init_gl_2(t_data *d)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
-	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
 	glEnable(GL_MULTISAMPLE);
 }
 

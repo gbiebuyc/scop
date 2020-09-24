@@ -21,22 +21,18 @@ void	parse_args(t_data *d, int ac, char **av)
 
 void	draw_background(t_data *d)
 {
-	glDisable(GL_DEPTH_TEST);
 	glUseProgram(d->bg_shader_prog);
 	glBindVertexArray(d->bg_vao);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-	glEnable(GL_DEPTH_TEST);
 }
 
 void	draw_skybox(t_data *d, float *view, float *projection)
 {
-	glDisable(GL_DEPTH_TEST);
 	glUseProgram(d->skybox_shader_prog);
 	glBindVertexArray(d->skybox_vao);
 	glUniformMatrix4fv(d->skybox_view_loc, 1, GL_TRUE, view);
 	glUniformMatrix4fv(d->skybox_projection_loc, 1, GL_TRUE, projection);
 	glDrawArrays(GL_TRIANGLES, 0, 6 * 6);
-	glEnable(GL_DEPTH_TEST);
 }
 
 void	draw_model(t_data *d)
@@ -52,9 +48,15 @@ void	draw_model(t_data *d)
 	projection = mat_projection(width / (float)height);
 	model = mat_identity((float[16]){0});
 	model = mat_rotate('y', (float)glfwGetTime() * 0.5, model);
-	if (d->transition[1] == 2 || d->transition[1] == 3)
+	if (d->transition[1] >= 3)
 		draw_skybox(d, view, projection);
-
+	else
+		draw_background(d);
+	glEnable(GL_DEPTH_TEST);
+	if (d->transition[1] == 2) {
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+	}
 	glUseProgram(d->shader_prog);
 	glBindVertexArray(d->model_vao);
 	glUniform1f(d->mix_value_loc, d->mix_value);
@@ -64,6 +66,8 @@ void	draw_model(t_data *d)
 	glUniformMatrix4fv(d->model_loc, 1, GL_TRUE, model);
 	glUniform3f(d->cam_pos_loc, d->pos[0], d->pos[1], d->pos[2]);
 	glDrawArrays(GL_TRIANGLES, 0, d->gl_arr_buf.count * 3);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 }
 
 void	loop(t_data *d)
@@ -73,8 +77,6 @@ void	loop(t_data *d)
 		glfwPollEvents();
 		handle_events(d);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (d->transition[1] == 0 || d->transition[1] == 1)
-			draw_background(d);
 		draw_model(d);
 		glfwSwapBuffers(d->window);
 	}

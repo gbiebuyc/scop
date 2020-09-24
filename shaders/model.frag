@@ -11,6 +11,7 @@ uniform float mix_value;
 uniform int transition[2];
 uniform vec3 cameraPos;
 vec3 theNormal;
+in vec3 vBC;
 
 vec4 effect_shades_of_grey() {
 	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;
@@ -58,12 +59,20 @@ vec4 effect_refraction() {
 	return texture(skybox, R);
 }
 
+vec4 effect_wireframe(){
+	vec3 d = fwidth(vBC);
+	vec3 a3 = smoothstep(vec3(0.0), d*1.5, vBC);
+	float factor = 1 - min(min(a3.x, a3.y), a3.z);
+	return vec4(0.1, 0.1, 0.1, factor);
+}
+
 vec4 get_effect(int i) {
 	switch (i) {
 		case 0: return effect_shades_of_grey();
 		case 1: return effect_lighting(effect_texture().rgb);
-		case 2: return effect_reflection();
-		case 3: return effect_refraction();
+		case 2: return effect_wireframe();
+		case 3: return effect_reflection();
+		case 4: return effect_refraction();
 	}
 }
 
