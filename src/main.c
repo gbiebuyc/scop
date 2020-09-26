@@ -256,6 +256,8 @@ void	recompile_shader_prog(t_data *d)
 	link_program(d->shader_prog);
 	glDeleteShader(shader);
 	get_uniform_locations(d);
+	puts("recompiled yay");
+	fflush(stdout);
 }
 
 int		main(int ac, char **av)
