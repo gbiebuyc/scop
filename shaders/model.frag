@@ -10,8 +10,17 @@ uniform samplerCube skybox;
 uniform float mix_value;
 uniform int transition[2];
 uniform vec3 cameraPos;
-vec3 theNormal;
 in vec3 vBC;
+
+vec3 get_normal() {
+	if (isnan(normal.x)) {
+		vec3 xTangent = dFdx( posCamSpace );
+		vec3 yTangent = dFdy( posCamSpace );
+		return normalize( cross( xTangent, yTangent ) );
+	} else {
+		return normal;
+	}
+}
 
 vec4 effect_shades_of_grey() {
 	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;
@@ -31,6 +40,7 @@ vec4 effect_texture() {
 }
 
 vec4 effect_lighting(vec3 color) {
+	vec3 theNormal = get_normal();
 	vec3 lightPos  = vec3(0, 1, 3);
 	vec3 lightColor = vec3(1, 1, 1);
 	vec3 lightDir = normalize(lightPos  - posCamSpace);
@@ -48,14 +58,14 @@ vec4 effect_lighting(vec3 color) {
 
 vec4 effect_reflection() {
 	vec3 I = normalize(posWorldSpace - cameraPos);
-	vec3 R = reflect(I, normalize(theNormal));
+	vec3 R = reflect(I, normalize(get_normal()));
 	return texture(skybox, R);
 }
 
 vec4 effect_refraction() {
 	float ratio = 1.00 / 1.52;
 	vec3 I = normalize(posWorldSpace - cameraPos);
-	vec3 R = refract(I, normalize(theNormal), ratio);
+	vec3 R = refract(I, normalize(get_normal()), ratio);
 	return texture(skybox, R);
 }
 
@@ -64,29 +74,4 @@ vec4 effect_wireframe(){
 	vec3 a3 = smoothstep(vec3(0.0), d*1.5, vBC);
 	float factor = 1 - min(min(a3.x, a3.y), a3.z);
 	return vec4(0, 0, 0, factor*0.3f);
-}
-
-vec4 get_effect(int i) {
-	switch (i) {
-		case 0: return effect_shades_of_grey();
-		case 1: return effect_lighting(effect_texture().rgb);
-		case 2: return effect_wireframe();
-		case 3: return effect_reflection();
-		case 4: return effect_refraction();
-	}
-}
-
-void main() {
-	if (isnan(normal.x)) {
-		vec3 xTangent = dFdx( posCamSpace );
-		vec3 yTangent = dFdy( posCamSpace );
-		theNormal = normalize( cross( xTangent, yTangent ) );
-	} else {
-		theNormal = normal;
-	}
-	if (mix_value != 0)
-		FragColor = mix(get_effect(transition[1]), get_effect(transition[0]), mix_value);
-	else
-		FragColor = get_effect(transition[1]);
-	//FragColor.a = 0.5f;
 }

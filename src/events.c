@@ -68,4 +68,5 @@ void	key_callback(GLFWwindow *window, int key, int scancode, int action)
 		d->transition[1] = modulo(d->transition[1] - 1, NUM_EFFECTS);
 	if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT))
 		d->transition[1] = modulo(d->transition[1] + 1, NUM_EFFECTS);
+	recompile_shader_prog(d);
 }

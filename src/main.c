@@ -183,6 +183,81 @@ void	get_uniform_locations(t_data *d)
 	glUniform1i(glGetUniformLocation(d->shader_prog, "skybox"), 1);
 }
 
+void	compile_shader(GLuint shader)
+{
+	int		success;
+	char	info_log[512];
+
+	glCompileShader(shader);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(shader, 512, NULL, info_log);
+		printf("%s", info_log);
+	}
+}
+
+void	link_program(GLuint prog)
+{
+	int		success;
+	char	info_log[512];
+
+	glLinkProgram(prog);
+	glGetProgramiv(prog, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(prog, 512, NULL, info_log);
+		printf("%s", info_log);
+	}
+}
+
+char	*get_effect(int i)
+{
+	if (i == 0)
+		return ("effect_shades_of_grey();");
+	if (i == 1)
+		return ("effect_lighting(effect_texture().rgb);");
+	if (i == 2)
+		return ("effect_wireframe();");
+	if (i == 3)
+		return ("effect_reflection();");
+	if (i == 4)
+		return ("effect_refraction();");
+	return NULL;
+}
+
+void	recompile_shader_prog(t_data *d)
+{
+	GLuint	shader;
+	char	*source[7];
+
+	if (d->shader_prog)
+		glDeleteProgram(d->shader_prog);
+	shader = glCreateShader(GL_FRAGMENT_SHADER);
+	source[0] = d->model_fs_source;
+	source[1] = "void main() {";
+	if (d->mix_value) {
+		source[2] = "vec4 effect_0 = ";
+		source[3] = get_effect(d->transition[0]);
+		source[4] = "vec4 effect_1 = ";
+		source[5] = get_effect(d->transition[1]);
+		source[6] = "FragColor = mix(effect_1, effect_0, mix_value);}";
+		glShaderSource(shader, 7, (const GLchar *const *)source, NULL);
+	} else {
+		source[2] = "FragColor = ";
+		source[3] = get_effect(d->transition[1]);
+		source[4] = "}";
+		glShaderSource(shader, 5, (const GLchar *const *)source, NULL);
+	}
+	compile_shader(shader);
+	d->shader_prog = glCreateProgram();
+	glAttachShader(d->shader_prog, d->model_vs);
+	glAttachShader(d->shader_prog, shader);
+	link_program(d->shader_prog);
+	glDeleteShader(shader);
+	get_uniform_locations(d);
+}
+
 int		main(int ac, char **av)
 {
 	t_data	*d;
@@ -192,9 +267,9 @@ int		main(int ac, char **av)
 	parse_args(d, ac, av);
 	parse_obj(d);
 	init_gl(d);
-	d->shader_prog = create_shader_prog(
-			d, "./shaders/model.vert", "./shaders/model.frag");
-	get_uniform_locations(d);
+	d->model_vs = load_shader(d, "./shaders/model.vert", GL_VERTEX_SHADER);
+	d->model_fs_source = read_file_into_mem(d, "./shaders/model.frag");
+	recompile_shader_prog(d);
 	load_texture(d);
 	cubemap(d);
 	init_background(d);

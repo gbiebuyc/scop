@@ -67,6 +67,8 @@ typedef struct	s_data
 	GLuint		skybox_vao;
 	GLuint		skybox_projection_loc;
 	GLuint		skybox_view_loc;
+	GLuint		model_vs;
+	char		*model_fs_source;
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);
@@ -90,5 +92,8 @@ void			init_background(t_data *d);
 void			dynarray_append(t_data *d, t_dynarray *da, void *e, size_t sz);
 int				modulo(int a, int b);
 void			key_callback(GLFWwindow *w, int key, int scancode, int action);
+char			*read_file_into_mem(t_data *d, char *filename);
+GLuint			load_shader(t_data *d, char *filename, GLenum shadertype);
+void			recompile_shader_prog(t_data *d);
 
 #endif
