@@ -63,7 +63,7 @@ vec4 effect_wireframe(){
 	vec3 d = fwidth(vBC);
 	vec3 a3 = smoothstep(vec3(0.0), d*1.5, vBC);
 	float factor = 1 - min(min(a3.x, a3.y), a3.z);
-	return vec4(0.1, 0.1, 0.1, factor);
+	return vec4(0, 0, 0, factor*0.3f);
 }
 
 vec4 get_effect(int i) {
