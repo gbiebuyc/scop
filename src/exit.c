@@ -14,11 +14,6 @@
 
 void	exit_scop(t_data *d, int exit_status)
 {
-	glDeleteShader(d->model_vs);
-	glDeleteProgram(d->shader_prog);
-	glDeleteProgram(d->bg_shader_prog);
-	glDeleteProgram(d->skybox_shader_prog);
-	glDeleteTextures(1, &d->texture);
 	glfwDestroyWindow(d->window);
 	glfwTerminate();
 	free(d->model_fs_source);
