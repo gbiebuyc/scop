@@ -12,33 +12,6 @@
 
 #include "scop.h"
 
-GLuint			load_shader(t_data *d, char *filename, GLenum shadertype);
-
-void	bg_load_shader_prog(t_data *d)
-{
-	int		success;
-	char	info_log[512];
-	int		vertex_shader;
-	int		fragment_shader;
-
-	vertex_shader = load_shader(d,
-		"./shaders/background.vert", GL_VERTEX_SHADER);
-	fragment_shader = load_shader(d,
-		"./shaders/background.frag", GL_FRAGMENT_SHADER);
-	d->bg_shader_prog = glCreateProgram();
-	glAttachShader(d->bg_shader_prog, vertex_shader);
-	glAttachShader(d->bg_shader_prog, fragment_shader);
-	glLinkProgram(d->bg_shader_prog);
-	glGetProgramiv(d->bg_shader_prog, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(d->bg_shader_prog, 512, NULL, info_log);
-		printf("%s", info_log);
-	}
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
-}
-
 void	init_background(t_data *d)
 {
 	GLuint vbo;
@@ -53,5 +26,6 @@ void	init_background(t_data *d)
 		0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
-	bg_load_shader_prog(d);
+	d->bg_shader_prog = create_shader_prog(d, "./shaders/background.vert",
+			"./shaders/background.frag");
 }

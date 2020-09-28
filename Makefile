@@ -15,6 +15,7 @@ SRC = main.c \
       matrices.c \
       matrix_transformations.c \
       parse_obj.c \
+      parse_obj_2.c \
       load_texture.c \
       load_shader.c \
       events.c \
@@ -22,6 +23,9 @@ SRC = main.c \
       background.c \
       dynarray.c \
       utils.c \
+	  model.c \
+	  cubemap.c \
+	  draw.c \
       exit.c
 OBJ = $(addprefix ./obj/, $(SRC:.c=.o))
 UNAME = $(shell uname -s)

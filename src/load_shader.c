@@ -35,31 +35,49 @@ char	*read_file_into_mem(t_data *d, char *filename)
 	return (buf);
 }
 
-GLuint	load_shader(t_data *d, char *filename, GLenum shadertype)
+void	compile_shader(GLuint shader)
 {
 	int		success;
 	char	info_log[512];
+
+	glCompileShader(shader);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(shader, 512, NULL, info_log);
+		printf("%s", info_log);
+	}
+}
+
+void	link_program(GLuint prog)
+{
+	int		success;
+	char	info_log[512];
+
+	glLinkProgram(prog);
+	glGetProgramiv(prog, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(prog, 512, NULL, info_log);
+		printf("%s", info_log);
+	}
+}
+
+GLuint	load_shader(t_data *d, char *filename, GLenum shadertype)
+{
 	GLuint	shader;
 	GLchar	*source;
 
 	source = read_file_into_mem(d, filename);
 	shader = glCreateShader(shadertype);
 	glShaderSource(shader, 1, (const GLchar *const *)&source, NULL);
-	glCompileShader(shader);
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(shader, 512, NULL, info_log);
-		printf("error in %s:\n%s", filename, info_log);
-	}
+	compile_shader(shader);
 	free(source);
 	return (shader);
 }
 
 GLuint	create_shader_prog(t_data *d, char *vs, char *fs)
 {
-	int		success;
-	char	info_log[512];
 	int		vertex_shader;
 	int		fragment_shader;
 	GLuint	prog;
@@ -69,13 +87,7 @@ GLuint	create_shader_prog(t_data *d, char *vs, char *fs)
 	prog = glCreateProgram();
 	glAttachShader(prog, vertex_shader);
 	glAttachShader(prog, fragment_shader);
-	glLinkProgram(prog);
-	glGetProgramiv(prog, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(prog, 512, NULL, info_log);
-		printf("%s", info_log);
-	}
+	link_program(prog);
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 	return (prog);

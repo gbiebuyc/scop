@@ -69,6 +69,7 @@ typedef struct	s_data
 	GLuint		skybox_view_loc;
 	GLuint		model_vs;
 	char		*model_fs_source;
+	double		time;
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);
@@ -95,5 +96,14 @@ void			key_callback(GLFWwindow *w, int key, int scancode, int action);
 char			*read_file_into_mem(t_data *d, char *filename);
 GLuint			load_shader(t_data *d, char *filename, GLenum shadertype);
 void			recompile_shader_prog(t_data *d);
+void			compile_shader(GLuint shader);
+void			link_program(GLuint prog);
+uint8_t			*read_ppm(t_data *d, char *filename, int *w, int *h);
+void			init_cubemap(t_data *d);
+void			draw_background(t_data *d);
+void			draw_skybox(t_data *d, float *view, float *projection);
+void			draw_model(t_data *d, float *view, float *projection);
+void			center_and_scale_vertices(t_data *d);
+void			assemble_tex_path(t_data *d, char *tex_file);
 
 #endif

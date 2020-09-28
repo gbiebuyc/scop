@@ -21,13 +21,11 @@ void	handle_events(t_data *d)
 	now = glfwGetTime();
 	dt = (now - d->last_frame);
 	d->last_frame = now;
+	d->time += fmin(dt, 0.060);
 	speed = 0.6 * dt;
-	if (d->mix_value)
-	{
-		d->mix_value = fmax(d->mix_value - 1.8 * dt, 0);
-		if (d->mix_value == 0)
-			recompile_shader_prog(d);
-	}
+	if (d->mix_value &&
+			(d->mix_value = fmax(d->mix_value - 1.8 * dt, 0)) == 0)
+		recompile_shader_prog(d);
 	if (glfwGetKey(d->window, GLFW_KEY_W) == GLFW_PRESS)
 		d->pos[Z] -= speed;
 	if (glfwGetKey(d->window, GLFW_KEY_S) == GLFW_PRESS)
@@ -76,8 +74,8 @@ void	key_callback(GLFWwindow *window, int key, int scancode, int action)
 		glfwSetWindowShouldClose(d->window, true);
 	if (key == GLFW_KEY_T && action == GLFW_PRESS)
 		transition_smooth(d, 1);
-	if (key == GLFW_KEY_LEFT && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	if (key == GLFW_KEY_LEFT && action)
 		transition_switch(d, modulo(d->transition[1] - 1, NUM_EFFECTS));
-	if (key == GLFW_KEY_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT))
+	if (key == GLFW_KEY_RIGHT && action)
 		transition_switch(d, modulo(d->transition[1] + 1, NUM_EFFECTS));
 }
