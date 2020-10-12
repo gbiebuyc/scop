@@ -23,6 +23,15 @@ vec3 get_normal() {
 }
 
 vec4 effect_shades_of_grey() {
+	vec3 viewDirection = normalize(posWorldSpace - cameraPos);
+	vec3 normalDirection = normalize(get_normal());
+	float CameraFacingPercentage = abs(dot(viewDirection, normalDirection));
+	vec4 ColorA = vec4(1);
+	vec4 ColorB = vec4(0);
+	return ColorA * CameraFacingPercentage + ColorB * (1 - CameraFacingPercentage);
+	if (abs(dot(viewDirection, normalDirection)) < 0.1f)
+		return vec4(0);
+	return vec4(1);
 	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;
 	return (vec4(factor, factor, factor, 1));
 }

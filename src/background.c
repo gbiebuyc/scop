@@ -16,8 +16,8 @@ void	init_background(t_data *d)
 {
 	GLuint vbo;
 
-	glGenVertexArrays(1, &d->bg_vao);
-	glBindVertexArray(d->bg_vao);
+	glGenVertexArrays(1, &d->screen_quad_vao);
+	glBindVertexArray(d->screen_quad_vao);
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2,

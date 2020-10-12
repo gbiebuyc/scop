@@ -23,22 +23,26 @@ void	loop(t_data *d)
 {
 	float	*view;
 	float	*projection;
-	int		width;
-	int		height;
 
 	while (!glfwWindowShouldClose(d->window))
 	{
 		glfwPollEvents();
 		handle_events(d);
+		glBindFramebuffer(GL_FRAMEBUFFER, d->fbo);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glfwGetFramebufferSize(d->window, &width, &height);
+		glfwGetFramebufferSize(d->window, &d->w, &d->h);
 		view = mat_look_at(d->pos);
-		projection = mat_projection(width / (float)height);
+		projection = mat_projection(d->w / (float)d->h);
 		if (d->transition[1] >= 3)
 			draw_skybox(d, view, projection);
 		else
 			draw_background(d);
 		draw_model(d, view, projection);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(d->framebuffer_shader_prog);
+		glBindVertexArray(d->screen_quad_vao);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 		glfwSwapBuffers(d->window);
 	}
 }

@@ -43,6 +43,7 @@ void	handle_events(t_data *d)
 void	framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	(void)window;
+	puts("test"); fflush(stdout);
 	glViewport(0, 0, width, height);
 }
 

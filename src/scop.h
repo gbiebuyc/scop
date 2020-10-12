@@ -38,6 +38,8 @@ typedef struct	s_dynarray
 
 typedef struct	s_data
 {
+	int			w;
+	int			h;
 	char		*obj_path;
 	char		*tex_path;
 	float		pos[3];
@@ -61,7 +63,7 @@ typedef struct	s_data
 	GLint		cam_pos_loc;
 	FILE		*f;
 	GLuint		model_vao;
-	GLuint		bg_vao;
+	GLuint		screen_quad_vao;
 	GLuint		cubemap_id;
 	GLuint		skybox_shader_prog;
 	GLuint		skybox_vao;
@@ -70,6 +72,9 @@ typedef struct	s_data
 	GLuint		model_vs;
 	char		*model_fs_source;
 	double		time;
+	GLuint		fbo;
+	GLuint		screentexture;
+	GLuint		framebuffer_shader_prog;
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);

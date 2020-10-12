@@ -15,7 +15,7 @@
 void	draw_background(t_data *d)
 {
 	glUseProgram(d->bg_shader_prog);
-	glBindVertexArray(d->bg_vao);
+	glBindVertexArray(d->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 

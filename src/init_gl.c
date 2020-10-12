@@ -33,6 +33,30 @@ void	init_gl_2(t_data *d)
 	glEnableVertexAttribArray(2);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_MULTISAMPLE);
+
+	glGenFramebuffers(1, &d->fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, d->fbo);
+	glGenTextures(1, &d->screentexture);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, d->screentexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->w, d->h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->screentexture, 0);
+	unsigned int rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		puts("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+	fflush(stdout);
+	d->framebuffer_shader_prog = create_shader_prog(d, "./shaders/framebuffer.vert",
+			"./shaders/framebuffer.frag");
+	glUseProgram(d->framebuffer_shader_prog);
+	glUniform1i(glGetUniformLocation(d->framebuffer_shader_prog, "screenTexture"), 2);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void	error_callback(int err_code, const char *description)
@@ -52,7 +76,9 @@ void	init_gl(t_data *d)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	d->window = glfwCreateWindow(800, 600,
+	d->w = 800;
+	d->h = 600;
+	d->window = glfwCreateWindow(d->w, d->h,
 		"SCOP. Movement: W/A/S/D/Space/Shift, Texture: T, Shaders: Left/Right",
 		NULL, NULL);
 	if (d->window == NULL)
