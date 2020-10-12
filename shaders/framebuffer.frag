@@ -4,39 +4,52 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
-
-//void main()
-//{ 
-//    FragColor = texture(screenTexture, TexCoords);
-//}
+uniform sampler2D normalsTexture;
 
 const float width = 800;
 const float height = 600;
 
-void make_kernel(inout vec4 n[9], sampler2D tex, vec2 coord)
-{
-	float w = 1.0 / width;
-	float h = 1.0 / height;
-
-	n[0] = texture(tex, coord + vec2( -w, -h));
-	n[1] = texture(tex, coord + vec2(0.0, -h));
-	n[2] = texture(tex, coord + vec2(  w, -h));
-	n[3] = texture(tex, coord + vec2( -w, 0.0));
-	n[4] = texture(tex, coord);
-	n[5] = texture(tex, coord + vec2(  w, 0.0));
-	n[6] = texture(tex, coord + vec2( -w, h));
-	n[7] = texture(tex, coord + vec2(0.0, h));
-	n[8] = texture(tex, coord + vec2(  w, h));
-}
-
 void main(void)
 {
-	vec4 n[9];
-	make_kernel( n, screenTexture, TexCoords.st );
+//	FragColor = texture(normalsTexture, TexCoords);
+//	return ;
+  float dx = 1.0 / width;
+  float dy = 1.0 / height;
 
-	vec4 sobel_edge_h = n[2] + (2.0*n[5]) + n[8] - (n[0] + (2.0*n[3]) + n[6]);
-  	vec4 sobel_edge_v = n[0] + (2.0*n[1]) + n[2] - (n[6] + (2.0*n[7]) + n[8]);
-	vec4 sobel = sqrt((sobel_edge_h * sobel_edge_h) + (sobel_edge_v * sobel_edge_v));
+  vec4 center = texture( normalsTexture, TexCoords );
 
-	FragColor = vec4( 1.0 - sobel.rgb, 1.0 );
+  // sampling just these 3 neighboring fragments keeps the outline thin.
+  vec4 top = texture( normalsTexture, TexCoords + vec2(0.0, dy) );
+  vec4 topRight = texture( normalsTexture, TexCoords + vec2(dx, dy) );
+  vec4 right = texture( normalsTexture, TexCoords + vec2(dx, 0.0) );
+
+  // the rest is pretty arbitrary, but seemed to give me the
+  // best-looking results for whatever reason.
+
+  vec4 t = center - top;
+  vec4 r = center - right;
+  vec4 tr = center - topRight;
+
+  t = abs( t );
+  r = abs( r );
+  tr = abs( tr );
+
+  float n;
+  n = max( n, t.x );
+  n = max( n, t.y );
+  n = max( n, t.z );
+  n = max( n, r.x );
+  n = max( n, r.y );
+  n = max( n, r.z );
+  n = max( n, tr.x );
+  n = max( n, tr.y );
+  n = max( n, tr.z );
+
+  // threshold and scale.
+  n = 1.0 - clamp( clamp((n * 2.0) - 0.8, 0.0, 1.0) * 1.5, 0.0, 1.0 );
+
+  //FragColor = vec4(1) * (0.1 + 0.9*n);
+  vec4 col = texture(screenTexture, TexCoords);
+  col = vec4(ivec4(col * 5)) / 5.0f;
+  FragColor = col * (0.1 + 0.9*n);
 }

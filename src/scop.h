@@ -74,6 +74,7 @@ typedef struct	s_data
 	double		time;
 	GLuint		fbo;
 	GLuint		screentexture;
+	GLuint		normalstexture;
 	GLuint		framebuffer_shader_prog;
 }				t_data;
 

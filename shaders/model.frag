@@ -1,5 +1,6 @@
 #version 330 core
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec3 Normal;
 in vec3 pos;
 in vec3 normal;
 in vec2 texCoord;
@@ -11,6 +12,7 @@ uniform float mix_value;
 uniform int transition[2];
 uniform vec3 cameraPos;
 in vec3 vBC;
+in vec3 normalCamSpace;
 
 vec3 get_normal() {
 	if (isnan(normal.x)) {
@@ -23,6 +25,7 @@ vec3 get_normal() {
 }
 
 vec4 effect_shades_of_grey() {
+	Normal = normalCamSpace;
 	vec3 viewDirection = normalize(posWorldSpace - cameraPos);
 	vec3 normalDirection = normalize(get_normal());
 	float CameraFacingPercentage = abs(dot(viewDirection, normalDirection));

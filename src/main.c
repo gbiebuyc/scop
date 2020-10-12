@@ -29,6 +29,7 @@ void	loop(t_data *d)
 		glfwPollEvents();
 		handle_events(d);
 		glBindFramebuffer(GL_FRAMEBUFFER, d->fbo);
+		glClearColor(0, 0, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwGetFramebufferSize(d->window, &d->w, &d->h);
 		view = mat_look_at(d->pos);

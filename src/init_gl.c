@@ -36,6 +36,7 @@ void	init_gl_2(t_data *d)
 
 	glGenFramebuffers(1, &d->fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, d->fbo);
+
 	glGenTextures(1, &d->screentexture);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, d->screentexture);
@@ -43,6 +44,18 @@ void	init_gl_2(t_data *d)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->screentexture, 0);
+
+	glGenTextures(1, &d->normalstexture);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, d->normalstexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->w, d->h, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->normalstexture, 0);
+
+	GLenum DrawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+	glDrawBuffers(2, DrawBuffers);
+
 	unsigned int rbo;
 	glGenRenderbuffers(1, &rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
@@ -56,6 +69,7 @@ void	init_gl_2(t_data *d)
 			"./shaders/framebuffer.frag");
 	glUseProgram(d->framebuffer_shader_prog);
 	glUniform1i(glGetUniformLocation(d->framebuffer_shader_prog, "screenTexture"), 2);
+	glUniform1i(glGetUniformLocation(d->framebuffer_shader_prog, "normalsTexture"), 3);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

@@ -11,6 +11,7 @@ out vec2 texCoord;
 out vec3 posWorldSpace;
 out vec3 posCamSpace;
 out vec3 vBC;
+out vec3 normalCamSpace;
 
 void main()
 {
@@ -18,6 +19,7 @@ void main()
 	pos = aPos;
 	posWorldSpace = vec3(model * vec4(aPos, 1.0));
 	posCamSpace = vec3(view * model * vec4(aPos, 1.0));
+	normalCamSpace = vec3(view * model * vec4(aNormal, 1.0));
 	normal = mat3(transpose(inverse(model))) * aNormal;
 	texCoord = aTexCoord;
 	if (gl_VertexID % 3 == 0)
