@@ -1,9 +1,10 @@
 #version 330 core
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec3 Normal;
 in vec4 color;
 
 void main()
 {
     FragColor = color;
-    FragColor = vec4(0.6, 0.6, 1.0, 1.0);
+	Normal = vec3(0,0,1);
 }

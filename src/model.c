@@ -34,8 +34,10 @@ char	*get_effect(int i)
 	if (i == 2)
 		return ("effect_wireframe();");
 	if (i == 3)
-		return ("effect_reflection();");
+		return ("effect_cel_shading();");
 	if (i == 4)
+		return ("effect_reflection();");
+	if (i == 5)
 		return ("effect_refraction();");
 	return (NULL);
 }

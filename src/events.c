@@ -63,7 +63,7 @@ void	transition_switch(t_data *d, int targeteffect)
 	recompile_shader_prog(d);
 }
 
-#define NUM_EFFECTS 5
+#define NUM_EFFECTS 6
 
 void	key_callback(GLFWwindow *window, int key, int scancode, int action)
 {

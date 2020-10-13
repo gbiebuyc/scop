@@ -5,6 +5,7 @@ in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
 uniform sampler2D normalsTexture;
+uniform int transition[2];
 
 const float width = 800;
 const float height = 600;
@@ -13,6 +14,10 @@ void main(void)
 {
 //	FragColor = texture(normalsTexture, TexCoords);
 //	return ;
+	if (transition[1] != 3) {
+		FragColor = texture(screenTexture, TexCoords);
+		return ;
+	}
   float dx = 1.0 / width;
   float dy = 1.0 / height;
 

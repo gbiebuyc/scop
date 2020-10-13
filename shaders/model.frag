@@ -25,16 +25,6 @@ vec3 get_normal() {
 }
 
 vec4 effect_shades_of_grey() {
-	Normal = normalCamSpace;
-	vec3 viewDirection = normalize(posWorldSpace - cameraPos);
-	vec3 normalDirection = normalize(get_normal());
-	float CameraFacingPercentage = abs(dot(viewDirection, normalDirection));
-	vec4 ColorA = vec4(1);
-	vec4 ColorB = vec4(0);
-	return ColorA * CameraFacingPercentage + ColorB * (1 - CameraFacingPercentage);
-	if (abs(dot(viewDirection, normalDirection)) < 0.1f)
-		return vec4(0);
-	return vec4(1);
 	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;
 	return (vec4(factor, factor, factor, 1));
 }
@@ -86,4 +76,14 @@ vec4 effect_wireframe(){
 	vec3 a3 = smoothstep(vec3(0.0), d*1.5, vBC);
 	float factor = 1 - min(min(a3.x, a3.y), a3.z);
 	return vec4(0, 0, 0, factor*0.3f);
+}
+
+vec4 effect_cel_shading() {
+	Normal = normalCamSpace;
+	vec3 viewDirection = normalize(posWorldSpace - cameraPos);
+	vec3 normalDirection = normalize(get_normal());
+	float CameraFacingPercentage = abs(dot(viewDirection, normalDirection));
+	vec4 ColorA = vec4(1);
+	vec4 ColorB = vec4(0);
+	return ColorA * CameraFacingPercentage + ColorB * (1 - CameraFacingPercentage);
 }
