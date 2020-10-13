@@ -29,9 +29,9 @@ void	loop(t_data *d)
 		glfwPollEvents();
 		handle_events(d);
 		glBindFramebuffer(GL_FRAMEBUFFER, d->fbo);
+		glViewport(0, 0, d->w, d->h);
 		glClearColor(0, 0, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glfwGetFramebufferSize(d->window, &d->w, &d->h);
 		view = mat_look_at(d->pos);
 		projection = mat_projection(d->w / (float)d->h);
 		if (d->transition[1] >= 4)
@@ -40,6 +40,7 @@ void	loop(t_data *d)
 			draw_background(d);
 		draw_model(d, view, projection);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, d->w, d->h);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(d->framebuffer_shader_prog);
 	glUniform1iv(glGetUniformLocation(d->framebuffer_shader_prog, "transition"), 2, d->transition);

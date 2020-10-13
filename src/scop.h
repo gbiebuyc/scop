@@ -76,6 +76,7 @@ typedef struct	s_data
 	GLuint		screentexture;
 	GLuint		normalstexture;
 	GLuint		framebuffer_shader_prog;
+	GLuint		rbo;
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);
