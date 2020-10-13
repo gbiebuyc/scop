@@ -45,14 +45,14 @@ void	framebuffer_size_callback(GLFWwindow *window, int width, int height)
 	t_data *d;
 
 	d = (t_data*)glfwGetWindowUserPointer(window);
-	glActiveTexture(GL_TEXTURE2);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glActiveTexture(GL_TEXTURE3);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, NULL);
-	glBindRenderbuffer(GL_RENDERBUFFER, d->rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
 	d->w = width;
 	d->h = height;
+	glActiveTexture(GL_TEXTURE2);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, d->w, d->h, GL_TRUE);
+	glActiveTexture(GL_TEXTURE3);
+	glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, d->w, d->h, GL_TRUE);
+	glBindRenderbuffer(GL_RENDERBUFFER, d->rbo);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, d->w, d->h);
 }
 
 void	transition_smooth(t_data *d, int targeteffect)

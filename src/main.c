@@ -39,6 +39,11 @@ void	loop(t_data *d)
 		else
 			draw_background(d);
 		draw_model(d, view, projection);
+
+//		glBindFramebuffer(GL_READ_FRAMEBUFFER, d->fbo);
+//		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+//		glBlitFramebuffer(0, 0, d->w, d->h, 0, 0, d->w, d->h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, d->w, d->h);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -46,6 +51,7 @@ void	loop(t_data *d)
 	glUniform1iv(glGetUniformLocation(d->framebuffer_shader_prog, "transition"), 2, d->transition);
 		glBindVertexArray(d->screen_quad_vao);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
 		glfwSwapBuffers(d->window);
 	}
 }
