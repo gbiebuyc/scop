@@ -12,6 +12,53 @@
 
 #include "scop.h"
 
+void	init_gl_4(t_data *d)
+{
+	glGenRenderbuffers(1, &d->rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, d->rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, d->w, d->h);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+			GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, d->rbo);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		puts("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
+	d->framebuffer_shader_prog = create_shader_prog(
+			d, "./shaders/framebuffer.vert", "./shaders/framebuffer.frag");
+	glUseProgram(d->framebuffer_shader_prog);
+	glUniform1i(glGetUniformLocation(
+				d->framebuffer_shader_prog, "screenTexture"), 2);
+	glUniform1i(glGetUniformLocation(
+				d->framebuffer_shader_prog, "normalsTexture"), 3);
+}
+
+void	init_gl_3(t_data *d)
+{
+	glGenFramebuffers(1, &d->fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, d->fbo);
+	glGenTextures(1, &d->screentexture);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, d->screentexture);
+	glTexImage2D(GL_TEXTURE_2D,
+			0, GL_RGB, d->w, d->h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->screentexture, 0);
+	glGenTextures(1, &d->normalstexture);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, d->normalstexture);
+	glTexImage2D(GL_TEXTURE_2D,
+			0, GL_RGB, d->w, d->h, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->normalstexture, 0);
+	d->draw_buffers[0] = GL_COLOR_ATTACHMENT0;
+	d->draw_buffers[1] = GL_COLOR_ATTACHMENT1;
+	glDrawBuffers(2, d->draw_buffers);
+	init_gl_4(d);
+}
+
 void	init_gl_2(t_data *d)
 {
 	GLuint vbo;
@@ -33,43 +80,7 @@ void	init_gl_2(t_data *d)
 	glEnableVertexAttribArray(2);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_MULTISAMPLE);
-
-	glGenFramebuffers(1, &d->fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, d->fbo);
-
-	glGenTextures(1, &d->screentexture);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, d->screentexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->w, d->h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->screentexture, 0);
-
-	glGenTextures(1, &d->normalstexture);
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, d->normalstexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->w, d->h, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->normalstexture, 0);
-
-	GLenum DrawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-	glDrawBuffers(2, DrawBuffers);
-
-	glGenRenderbuffers(1, &d->rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, d->rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, d->w, d->h);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, d->rbo);
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		puts("ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
-	fflush(stdout);
-	d->framebuffer_shader_prog = create_shader_prog(d, "./shaders/framebuffer.vert",
-			"./shaders/framebuffer.frag");
-	glUseProgram(d->framebuffer_shader_prog);
-	glUniform1i(glGetUniformLocation(d->framebuffer_shader_prog, "screenTexture"), 2);
-	glUniform1i(glGetUniformLocation(d->framebuffer_shader_prog, "normalsTexture"), 3);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	init_gl_3(d);
 }
 
 void	error_callback(int err_code, const char *description)

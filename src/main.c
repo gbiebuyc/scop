@@ -21,9 +21,6 @@ void	parse_args(t_data *d, int ac, char **av)
 
 void	loop(t_data *d)
 {
-	float	*view;
-	float	*projection;
-
 	while (!glfwWindowShouldClose(d->window))
 	{
 		glfwPollEvents();
@@ -32,18 +29,19 @@ void	loop(t_data *d)
 		glViewport(0, 0, d->w, d->h);
 		glClearColor(0, 0, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		view = mat_look_at(d->pos);
-		projection = mat_projection(d->w / (float)d->h);
+		d->view = mat_look_at(d->pos);
+		d->projection = mat_projection(d->w / (float)d->h);
 		if (d->transition[1] >= 4)
-			draw_skybox(d, view, projection);
+			draw_skybox(d, d->view, d->projection);
 		else
 			draw_background(d);
-		draw_model(d, view, projection);
+		draw_model(d, d->view, d->projection);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, d->w, d->h);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(d->framebuffer_shader_prog);
-	glUniform1iv(glGetUniformLocation(d->framebuffer_shader_prog, "transition"), 2, d->transition);
+		glUniform1iv(glGetUniformLocation(d->framebuffer_shader_prog,
+					"transition"), 2, d->transition);
 		glBindVertexArray(d->screen_quad_vao);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 		glfwSwapBuffers(d->window);

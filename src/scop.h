@@ -77,6 +77,9 @@ typedef struct	s_data
 	GLuint		normalstexture;
 	GLuint		framebuffer_shader_prog;
 	GLuint		rbo;
+	float		*view;
+	float		*projection;
+	GLenum		draw_buffers[10];
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);

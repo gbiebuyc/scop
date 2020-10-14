@@ -15,7 +15,8 @@
 void	draw_background(t_data *d)
 {
 	glUseProgram(d->bg_shader_prog);
-	glUniform1iv(glGetUniformLocation(d->bg_shader_prog, "transition"), 2, d->transition);
+	glUniform1iv(glGetUniformLocation(d->bg_shader_prog,
+				"transition"), 2, d->transition);
 	glBindVertexArray(d->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
