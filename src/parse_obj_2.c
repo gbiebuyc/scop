@@ -46,11 +46,15 @@ void	assemble_tex_path(t_data *d, char *tex_file)
 	char *tmp;
 	char *obj_dirname;
 
+	if (!strlen(tex_file))
+	{
+		if (!(d->tex_path = strdup("./resources/textures/default.ppm")))
+			exit_scop(d, printf("strdup fail\n"));
+		return ;
+	}
 	if (!(tmp = strdup(d->obj_path)))
 		exit_scop(d, printf("strdup fail\n"));
 	obj_dirname = dirname(tmp);
-	if (!strlen(tex_file))
-		tex_file = "textures/default.ppm";
 	if (!(d->tex_path = malloc(strlen(obj_dirname) + strlen(tex_file) + 2)))
 		exit_scop(d, printf("malloc fail\n"));
 	strcpy(d->tex_path, obj_dirname);
