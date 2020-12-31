@@ -71,7 +71,10 @@ typedef struct	s_data
 	GLuint		skybox_view_loc;
 	GLuint		model_vs;
 	char		*model_fs_source;
-	double		time;
+	double		mouse_xpos;
+	double		mouse_ypos;
+	double		rot_horizontal;
+	double		rot_vertical;
 	GLuint		fbo;
 	GLuint		screentexture;
 	GLuint		normalstexture;
@@ -115,5 +118,7 @@ void			draw_skybox(t_data *d, float *view, float *projection);
 void			draw_model(t_data *d, float *view, float *projection);
 void			center_and_scale_vertices(t_data *d);
 void			assemble_tex_path(t_data *d, char *tex_file);
+void			handle_mouse(t_data *d, double dt);
+void			scroll_callback(GLFWwindow *w, double xoffset, double yoffset);
 
 #endif

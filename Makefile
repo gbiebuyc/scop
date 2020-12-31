@@ -19,6 +19,7 @@ SRC = main.c \
 	load_texture.c \
 	load_shader.c \
 	events.c \
+	events_mouse.c \
 	init_gl.c \
 	background.c \
 	dynarray.c \

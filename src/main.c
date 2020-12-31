@@ -66,6 +66,7 @@ int		main(int ac, char **av)
 	d->pos[X] = 0;
 	d->pos[Y] = 0;
 	d->pos[Z] = 1;
+	d->mouse_xpos = NAN;
 	loop(d);
 	exit_scop(d, EXIT_SUCCESS);
 	return (0);

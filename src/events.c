@@ -21,7 +21,6 @@ void	handle_events(t_data *d)
 	now = glfwGetTime();
 	dt = (now - d->last_frame);
 	d->last_frame = now;
-	d->time += fmin(dt, 0.060);
 	speed = 0.6 * dt;
 	if (d->mix_value &&
 			(d->mix_value = fmax(d->mix_value - 1.8 * dt, 0)) == 0)
@@ -38,6 +37,7 @@ void	handle_events(t_data *d)
 		d->pos[Y] += speed;
 	if (glfwGetKey(d->window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		d->pos[Y] -= speed;
+	handle_mouse(d, dt);
 }
 
 void	framebuffer_size_callback(GLFWwindow *window, int width, int height)

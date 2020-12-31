@@ -41,7 +41,8 @@ void	draw_model(t_data *d, float *view, float *projection)
 		glDisable(GL_DEPTH_TEST);
 	}
 	model = mat_identity((float[16]){0});
-	model = mat_rotate('y', (float)d->time * 0.5, model);
+	mat_rotate('x', (float)d->rot_vertical, model);
+	mat_rotate('y', (float)d->rot_horizontal, model);
 	glUseProgram(d->shader_prog);
 	glBindVertexArray(d->model_vao);
 	glUniform1f(d->mix_value_loc, d->mix_value);
