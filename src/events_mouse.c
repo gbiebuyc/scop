@@ -14,12 +14,17 @@
 
 void	scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 {
-	t_data *d;
+	t_data	*d;
+	double	zoom;
 
 	(void)xoffset;
 	d = glfwGetWindowUserPointer(window);
 	if (yoffset)
-		d->pos[Z] *= 1.0 - yoffset * 0.05;
+	{
+		zoom = d->pos[Z] * 0.05;
+		zoom = fmax(zoom, 0.02);
+		d->pos[Z] -= yoffset * zoom;
+	}
 }
 
 void	handle_mouse(t_data *d, double dt)
