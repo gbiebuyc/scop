@@ -88,7 +88,17 @@ vec4 effect_wireframe(){
 	vec3 d = fwidth(vBC);
 	vec3 a3 = smoothstep(vec3(0.0), d*1.5, vBC);
 	float factor = 1 - min(min(a3.x, a3.y), a3.z);
-	return vec4(0, 0, 0, factor*0.3f);
+
+	// Green scanlines
+	float green;
+	float thickness = 0.01f;
+	if (abs(mod(time*.2f, 1) - .5f - pos.y) < thickness)            // scanline 1
+		green = 1.0f;
+	else if (abs(mod(time*.2f + .5f, 1) - .5f - pos.y) < thickness) // scanline 2
+		green = 1.0f;
+	else
+		green = 0.02f;
+	return vec4(0, green, 0, factor*0.3f);
 }
 
 vec4 effect_cel_shading() {
