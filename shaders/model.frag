@@ -11,6 +11,7 @@ uniform samplerCube skybox;
 uniform float mix_value;
 uniform vec3 cameraPos;
 uniform float time;
+uniform bool isDefaultTexture;
 in vec3 vBC;
 in vec3 normalCamSpace;
 
@@ -44,7 +45,7 @@ vec3 effect_rainbow() {
 
 vec4 effect_texture() {
 	vec2 p;
-	if (isnan(texCoord.x)) {
+	if (isnan(texCoord.x) || isDefaultTexture) {
 		float tex_scale = 3.0f;
 		p = vec2(pos.z, -pos.y) * tex_scale;
 		p.y += 0.5f;

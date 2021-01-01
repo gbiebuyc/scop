@@ -20,6 +20,8 @@ void	get_uniform_locations(t_data *d)
 	d->mix_value_loc = glGetUniformLocation(d->shader_prog, "mix_value");
 	d->time_loc = glGetUniformLocation(d->shader_prog, "time");
 	d->cam_pos_loc = glGetUniformLocation(d->shader_prog, "cameraPos");
+	d->isdefaulttexture_loc =
+		glGetUniformLocation(d->shader_prog, "isDefaultTexture");
 	glUseProgram(d->shader_prog);
 	glUniform1i(glGetUniformLocation(d->shader_prog, "ourTexture"), 0);
 	glUniform1i(glGetUniformLocation(d->shader_prog, "skybox"), 1);

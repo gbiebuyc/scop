@@ -73,6 +73,7 @@ typedef struct	s_data
 	GLint		mix_value_loc;
 	GLint		time_loc;
 	GLint		cam_pos_loc;
+	GLint		isdefaulttexture_loc;
 	FILE		*f;
 	GLuint		model_vao;
 	GLuint		screen_quad_vao;
@@ -97,6 +98,7 @@ typedef struct	s_data
 	GLenum		draw_buffers[10];
 	double		time;
 	char		*effects[NUM_EFFECTS];
+	bool		isdefaulttexture;
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);

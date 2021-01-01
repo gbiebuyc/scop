@@ -5,7 +5,7 @@ in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
 uniform sampler2D normalsTexture;
-uniform int isCellShading;
+uniform bool isCellShading;
 
 const float width = 800;
 const float height = 600;
@@ -14,7 +14,7 @@ void main(void)
 {
 	vec4 col = texture(screenTexture, TexCoords);
 
-	if (isCellShading == 0) {
+	if (!isCellShading) {
 		FragColor = col;
 		return ;
 	}

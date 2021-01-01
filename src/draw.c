@@ -51,6 +51,7 @@ void	draw_model(t_data *d, float *view, float *projection)
 	glUniformMatrix4fv(d->projection_loc, 1, GL_TRUE, projection);
 	glUniformMatrix4fv(d->model_loc, 1, GL_TRUE, model);
 	glUniform3f(d->cam_pos_loc, d->pos[0], d->pos[1], d->pos[2]);
+	glUniform1i(d->isdefaulttexture_loc, d->isdefaulttexture);
 	glDrawArrays(GL_TRIANGLES, 0, d->gl_arr_buf.count * 3);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);

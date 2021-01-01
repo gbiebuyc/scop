@@ -1,5 +1,8 @@
 # Blender v2.82 (sub 7) OBJ File: ''
 # www.blender.org
+
+scopTexture ./textures/default.ppm
+
 v 0.232406 -0.745504 1.477731
 v 0.232406 -0.745504 2.843098
 v -0.227475 -0.745504 2.843098

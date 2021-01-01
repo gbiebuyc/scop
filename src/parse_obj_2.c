@@ -50,6 +50,7 @@ void	assemble_tex_path(t_data *d, char *tex_file)
 	{
 		if (!(d->tex_path = strdup("./resources/textures/default.ppm")))
 			exit_scop(d, printf("strdup fail\n"));
+		d->isdefaulttexture = true;
 		return ;
 	}
 	if (!(tmp = strdup(d->obj_path)))
