@@ -18,28 +18,22 @@ void	get_uniform_locations(t_data *d)
 	d->view_loc = glGetUniformLocation(d->shader_prog, "view");
 	d->projection_loc = glGetUniformLocation(d->shader_prog, "projection");
 	d->mix_value_loc = glGetUniformLocation(d->shader_prog, "mix_value");
-	d->transition_loc = glGetUniformLocation(d->shader_prog, "transition");
+	d->time_loc = glGetUniformLocation(d->shader_prog, "time");
 	d->cam_pos_loc = glGetUniformLocation(d->shader_prog, "cameraPos");
 	glUseProgram(d->shader_prog);
 	glUniform1i(glGetUniformLocation(d->shader_prog, "ourTexture"), 0);
 	glUniform1i(glGetUniformLocation(d->shader_prog, "skybox"), 1);
 }
 
-char	*get_effect(int i)
+void	init_effects(t_data *d)
 {
-	if (i == 0)
-		return ("effect_shades_of_grey();");
-	if (i == 1)
-		return ("effect_lighting(effect_texture().rgb);");
-	if (i == 2)
-		return ("effect_wireframe();");
-	if (i == 3)
-		return ("effect_cel_shading();");
-	if (i == 4)
-		return ("effect_reflection();");
-	if (i == 5)
-		return ("effect_refraction();");
-	return (NULL);
+	d->effects[EFFECT_SHADES_OF_GREY] = "effect_shades_of_grey();";
+	d->effects[EFFECT_TEXTURE] = "effect_lighting(effect_texture().rgb);";
+	d->effects[EFFECT_RAINBOW] = "effect_lighting(effect_rainbow().rgb);";
+	d->effects[EFFECT_WIREFRAME] = "effect_wireframe();";
+	d->effects[EFFECT_CEL_SHADING] = "effect_cel_shading();";
+	d->effects[EFFECT_REFLECTION] = "effect_reflection();";
+	d->effects[EFFECT_REFRACTION] = "effect_refraction();";
 }
 
 void	recompile_shader_prog_2(t_data *d, GLuint shader)
@@ -66,16 +60,16 @@ void	recompile_shader_prog(t_data *d)
 	if (d->mix_value)
 	{
 		source[2] = "vec4 effect_0 = ";
-		source[3] = get_effect(d->transition[0]);
+		source[3] = d->effects[d->transition[0]];
 		source[4] = "vec4 effect_1 = ";
-		source[5] = get_effect(d->transition[1]);
+		source[5] = d->effects[d->transition[1]];
 		source[6] = "FragColor = mix(effect_1, effect_0, mix_value);}";
 		glShaderSource(shader, 7, (const GLchar *const *)source, NULL);
 	}
 	else
 	{
 		source[2] = "FragColor = ";
-		source[3] = get_effect(d->transition[1]);
+		source[3] = d->effects[d->transition[1]];
 		source[4] = "}";
 		glShaderSource(shader, 5, (const GLchar *const *)source, NULL);
 	}

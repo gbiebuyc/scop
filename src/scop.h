@@ -28,6 +28,18 @@
 # define Y 1
 # define Z 2
 
+enum
+{
+	EFFECT_SHADES_OF_GREY,
+	EFFECT_TEXTURE,
+	EFFECT_RAINBOW,
+	EFFECT_WIREFRAME,
+	EFFECT_CEL_SHADING,
+	EFFECT_REFLECTION,
+	EFFECT_REFRACTION,
+	NUM_EFFECTS,
+};
+
 typedef struct	s_dynarray
 {
 	void		*array;
@@ -59,7 +71,7 @@ typedef struct	s_data
 	GLint		view_loc;
 	GLint		projection_loc;
 	GLint		mix_value_loc;
-	GLint		transition_loc;
+	GLint		time_loc;
 	GLint		cam_pos_loc;
 	FILE		*f;
 	GLuint		model_vao;
@@ -83,6 +95,8 @@ typedef struct	s_data
 	float		*view;
 	float		*projection;
 	GLenum		draw_buffers[10];
+	double		time;
+	char		*effects[NUM_EFFECTS];
 }				t_data;
 
 void			mat_mul(float a[16], float b[16]);
@@ -120,5 +134,6 @@ void			center_and_scale_vertices(t_data *d);
 void			assemble_tex_path(t_data *d, char *tex_file);
 void			handle_mouse(t_data *d, double dt);
 void			scroll_callback(GLFWwindow *w, double xoffset, double yoffset);
+void			init_effects(t_data *d);
 
 #endif

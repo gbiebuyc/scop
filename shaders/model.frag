@@ -9,8 +9,8 @@ in vec3 posCamSpace;
 uniform sampler2D ourTexture;
 uniform samplerCube skybox;
 uniform float mix_value;
-uniform int transition[2];
 uniform vec3 cameraPos;
+uniform float time;
 in vec3 vBC;
 in vec3 normalCamSpace;
 
@@ -24,9 +24,22 @@ vec3 get_normal() {
 	}
 }
 
+// https://stackoverflow.com/a/17897228
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 vec4 effect_shades_of_grey() {
 	float factor = gl_PrimitiveID % 5 * 0.1 + 0.05;
 	return (vec4(factor, factor, factor, 1));
+}
+
+vec3 effect_rainbow() {
+	float hue = pos.y + time * 0.2;
+	return (hsv2rgb(vec3(hue, 1, 0.8)));
 }
 
 vec4 effect_texture() {

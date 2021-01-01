@@ -31,7 +31,8 @@ void	loop(t_data *d)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		d->view = mat_look_at(d->pos);
 		d->projection = mat_projection(d->w / (float)d->h);
-		if (d->transition[1] >= 4)
+		if (d->transition[1] == EFFECT_REFLECTION ||
+				d->transition[1] == EFFECT_REFRACTION)
 			draw_skybox(d, d->view, d->projection);
 		else
 			draw_background(d);
@@ -40,8 +41,8 @@ void	loop(t_data *d)
 		glViewport(0, 0, d->w, d->h);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(d->framebuffer_shader_prog);
-		glUniform1iv(glGetUniformLocation(d->framebuffer_shader_prog,
-					"transition"), 2, d->transition);
+		glUniform1i(glGetUniformLocation(d->framebuffer_shader_prog, "isCellShading"),
+				(d->transition[1] == EFFECT_CEL_SHADING) ? 1 : 0);
 		glBindVertexArray(d->screen_quad_vao);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 		glfwSwapBuffers(d->window);
@@ -57,6 +58,7 @@ int		main(int ac, char **av)
 	parse_args(d, ac, av);
 	parse_obj(d);
 	init_gl(d);
+	init_effects(d);
 	d->model_vs = load_shader(d, "./shaders/model.vert", GL_VERTEX_SHADER);
 	d->model_fs_source = read_file_into_mem(d, "./shaders/model.frag");
 	recompile_shader_prog(d);

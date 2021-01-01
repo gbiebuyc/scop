@@ -50,6 +50,6 @@ void	handle_mouse(t_data *d, double dt)
 	else
 	{
 		d->mouse_xpos = NAN;
-		d->rot_horizontal += fmin(dt, 0.060) * 0.5;
+		d->rot_horizontal += dt * 0.5;
 	}
 }

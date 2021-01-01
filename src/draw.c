@@ -15,8 +15,8 @@
 void	draw_background(t_data *d)
 {
 	glUseProgram(d->bg_shader_prog);
-	glUniform1iv(glGetUniformLocation(d->bg_shader_prog,
-				"transition"), 2, d->transition);
+	glUniform1i(glGetUniformLocation(d->bg_shader_prog, "isCellShading"),
+			(d->transition[1] == EFFECT_CEL_SHADING) ? 1 : 0);
 	glBindVertexArray(d->screen_quad_vao);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
@@ -35,7 +35,7 @@ void	draw_model(t_data *d, float *view, float *projection)
 	float	*model;
 
 	glEnable(GL_DEPTH_TEST);
-	if (d->transition[1] == 2)
+	if (d->transition[1] == EFFECT_WIREFRAME)
 	{
 		glEnable(GL_BLEND);
 		glDisable(GL_DEPTH_TEST);
@@ -46,7 +46,7 @@ void	draw_model(t_data *d, float *view, float *projection)
 	glUseProgram(d->shader_prog);
 	glBindVertexArray(d->model_vao);
 	glUniform1f(d->mix_value_loc, d->mix_value);
-	glUniform1iv(d->transition_loc, 2, d->transition);
+	glUniform1f(d->time_loc, (float)d->time);
 	glUniformMatrix4fv(d->view_loc, 1, GL_TRUE, view);
 	glUniformMatrix4fv(d->projection_loc, 1, GL_TRUE, projection);
 	glUniformMatrix4fv(d->model_loc, 1, GL_TRUE, model);
