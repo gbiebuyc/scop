@@ -19,8 +19,7 @@ void	handle_events(t_data *d)
 	double	dt;
 
 	now = glfwGetTime();
-	dt = (now - d->last_frame);
-	dt = fmin(dt, 0.060);
+	dt = fmin((now - d->last_frame), 0.060);
 	d->time += dt;
 	d->last_frame = now;
 	speed = 0.6 * dt;

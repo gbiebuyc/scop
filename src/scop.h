@@ -130,6 +130,7 @@ void			init_cubemap(t_data *d);
 void			draw_background(t_data *d);
 void			draw_skybox(t_data *d, float *view, float *projection);
 void			draw_model(t_data *d, float *view, float *projection);
+void			draw_framebuffer(t_data *d);
 void			center_and_scale_vertices(t_data *d);
 void			assemble_tex_path(t_data *d, char *tex_file);
 void			handle_mouse(t_data *d, double dt);

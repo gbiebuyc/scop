@@ -55,3 +55,15 @@ void	draw_model(t_data *d, float *view, float *projection)
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 }
+
+void	draw_framebuffer(t_data *d)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, d->w, d->h);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(d->framebuffer_shader_prog);
+	glUniform1i(glGetUniformLocation(d->framebuffer_shader_prog,
+		"isCellShading"), (d->transition[1] == EFFECT_CEL_SHADING) ? 1 : 0);
+	glBindVertexArray(d->screen_quad_vao);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+}
